@@ -1,27 +1,27 @@
 {
-  "name": "cheap-video-streaming",
-  "version": "0.1.0",
+  "name": "streamgeek",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev:app": "pnpm --filter app dev",
+    "build:app": "pnpm --filter app build",
+    "start:app": "pnpm --filter app start",
+    "lint:app": "pnpm --filter app lint",
+    "dev:api": "pnpm --filter api dev",
+    "build:api": "pnpm --filter api build",
+    "start:api": "pnpm --filter api start",
+    "lint:api": "pnpm --filter api lint"
   },
-  "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.4.3"
+  "homepage": "https://github.com/teamgeek-io/streamgeek#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teamgeek-io/streamgeek.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teamgeek-io/streamgeek/issues"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.3",
-    "@eslint/eslintrc": "^3"
+    "@types/node": "^22",
+    "typescript": "^5"
   }
 }

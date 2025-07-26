@@ -1,0 +1,44 @@
+# API Development Guidelines
+
+## Hono API Structure
+
+Follow the API endpoints defined in [documentation/planning.md](mdc:documentation/planning.md):
+
+### Required Endpoints
+
+- `POST /api/orchestrator/jobs/create` - Assign job to least-busy agent, return upload URL
+- `POST /api/orchestrator/jobs/:id/complete` - Called by agents to mark jobs complete
+- `GET /api/orchestrator/jobs/:id/status` - Return job status (queued, uploading, encoding, done, failed)
+- `POST /api/agents/:id/register` - Agent registration + load reporting
+
+### Database Schema
+
+Use Drizzle ORM with Cloudflare D2. Reference the schema from the planning document:
+
+```typescript
+jobs: {
+  id: string,
+  status: "queued" | "uploading" | "encoding" | "done" | "failed",
+  agent_id: string,
+  original_filename: string,
+  output_url: string | null,
+  error_message: string | null,
+  created_at: datetime
+}
+
+agents: {
+  id: string,
+  fqdn: string,
+  last_seen: datetime,
+  current_job_count: number
+}
+```
+
+## Development Patterns
+
+- Use Hono for API routing and middleware
+- Implement proper error handling and status codes
+- Follow the upload flow: create job → upload to agent → process → report completion
+- Use TypeScript for type safety
+
+---

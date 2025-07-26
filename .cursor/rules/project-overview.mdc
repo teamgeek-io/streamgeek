@@ -1,0 +1,75 @@
+---
+alwaysApply: true
+---
+
+# StreamGeek Project Overview
+
+This is a distributed FFmpeg HLS encoding system with self-hosted agents.
+
+## Project Architecture
+
+- **Monorepo**: pnpm workspaces with apps/ and packages/ structure
+- **Orchestrator**: Hono API + Next.js UI in `apps/app/`
+- **Agent**: Node.js server with tus uploads + FFmpeg encoding in `apps/agent/`
+- **Database**: Cloudflare D2 with Drizzle ORM
+- **Storage**: Cloudflare R2 for HLS segments
+- **Upload Protocol**: tus for resumable file uploads
+
+## Key Technologies
+
+- **Monorepo**: pnpm workspaces
+- **API**: Hono
+- **UI**: Next.js (OpenNext for Cloudflare)
+- **Database**: Cloudflare D2 + Drizzle ORM
+- **Upload**: Uppy + tus protocol
+- **Video**: FFmpeg for HLS encoding
+- **Storage**: Cloudflare R2
+
+## Development Guidelines
+
+- Follow the monorepo structure defined in the planning document
+- Use the specified tooling stack (Hono, Next.js, D2, etc.)
+- Implement according to the MVP feature checklist
+- Reference the upload flow and agent logic from the planning document
+
+## File Structure
+
+- `apps/` - Contains the orchestrator (app) and agent applications
+- `packages/` - Shared utilities and types
+- `documentation/` - Project planning and specifications
+
+# StreamGeek Project Overview
+
+This is a distributed FFmpeg HLS encoding system with self-hosted agents.
+
+## Project Architecture
+
+- **Monorepo**: pnpm workspaces with apps/ and packages/ structure
+- **Orchestrator**: Hono API + Next.js UI in `apps/app/`
+- **Agent**: Node.js server with tus uploads + FFmpeg encoding in `apps/agent/`
+- **Database**: Cloudflare D2 with Drizzle ORM
+- **Storage**: Cloudflare R2 for HLS segments
+- **Upload Protocol**: tus for resumable file uploads
+
+## Key Technologies
+
+- **Monorepo**: pnpm workspaces
+- **API**: Hono
+- **UI**: Next.js (OpenNext for Cloudflare)
+- **Database**: Cloudflare D2 + Drizzle ORM
+- **Upload**: Uppy + tus protocol
+- **Video**: FFmpeg for HLS encoding
+- **Storage**: Cloudflare R2
+
+## Development Guidelines
+
+- Follow the monorepo structure defined in the planning document
+- Use the specified tooling stack (Hono, Next.js, D2, etc.)
+- Implement according to the MVP feature checklist
+- Reference the upload flow and agent logic from the planning document
+
+## File Structure
+
+- `apps/` - Contains the orchestrator (app) and agent applications
+- `packages/` - Shared utilities and types
+- `documentation/` - Project planning and specifications

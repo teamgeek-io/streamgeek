@@ -1,0 +1,107 @@
+---
+alwaysApply: false
+---
+
+# Monorepo Structure Guidelines
+
+## Workspace Configuration
+
+This project uses pnpm workspaces for monorepo management. Reference [documentation/planning.md](mdc:documentation/planning.md) for the complete project structure.
+
+## Directory Structure
+
+```
+📦 ffmpeg-hls-fleet/
+├── package.json
+├── pnpm-workspace.yaml
+├── apps/
+│   ├── app/                # Orchestrator (Hono API + Next.js UI)
+│   └── agent/              # Node.js agent that accepts tus uploads and runs FFmpeg (HonoAPI)
+└── packages/
+    └── shared/             # Shared utilities, types, API clients
+```
+
+## Development Commands
+
+- Run local agents: `pnpm --filter agent dev`
+- Run app locally: `pnpm --filter app dev`
+- Install dependencies: `pnpm install`
+- Build all packages: `pnpm build`
+
+## Package Management
+
+- Use pnpm for all package management
+- Follow workspace structure: `apps/*` and `packages/*`
+- Share common utilities through `packages/shared`
+- Use workspace dependencies for cross-package references
+
+## Workspace Configuration
+
+The `pnpm-workspace.yaml` should include:
+
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+## Development Guidelines
+
+- Keep shared code in `packages/shared`
+- Use workspace dependencies for cross-package imports
+- Follow the tooling stack specified in the planning document
+- Maintain consistent package.json structure across workspaces
+
+---
+
+# Monorepo Structure Guidelines
+
+## Workspace Configuration
+
+This project uses pnpm workspaces for monorepo management. Reference [documentation/planning.md](mdc:documentation/planning.md) for the complete project structure.
+
+## Directory Structure
+
+```
+📦 ffmpeg-hls-fleet/
+├── package.json
+├── pnpm-workspace.yaml
+├── apps/
+│   ├── app/                # Orchestrator (Hono API + Next.js UI)
+│   └── agent/              # Node.js agent that accepts tus uploads and runs FFmpeg
+└── packages/
+    └── shared/             # Shared utilities, types, API clients
+```
+
+## Development Commands
+
+- Run local agents: `pnpm --filter agent dev`
+- Run app locally: `pnpm --filter app dev`
+- Install dependencies: `pnpm install`
+- Build all packages: `pnpm build`
+
+## Package Management
+
+- Use pnpm for all package management
+- Follow workspace structure: `apps/*` and `packages/*`
+- Share common utilities through `packages/shared`
+- Use workspace dependencies for cross-package references
+
+## Workspace Configuration
+
+The `pnpm-workspace.yaml` should include:
+
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+## Development Guidelines
+
+- Keep shared code in `packages/shared`
+- Use workspace dependencies for cross-package imports
+- Follow the tooling stack specified in the planning document
+- Maintain consistent package.json structure across workspaces
+
+---
