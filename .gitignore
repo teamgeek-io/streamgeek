@@ -26,8 +26,7 @@ dist
 *.sln
 *.sw?
 
-# Cursor rules since we use vibe-rules (rules are copied here on pnpm install)
-.cursor/rules
+
 
 # MacOS
 .DS_Store
