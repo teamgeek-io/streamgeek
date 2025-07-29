@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { RequestInfo } from "rwsdk/worker";
-import { createJob } from "../../../orchestrator/functions";
+import { createJob } from "../../../shared/functions";
 import { Job, Video } from "../../../../db";
 
 export function UploadEditor({ video }: { video: Video }) {
