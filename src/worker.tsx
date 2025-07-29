@@ -8,8 +8,10 @@ import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
-import { Upload } from "@/app/pages/Upload";
+import { Upload } from "@/app/pages/upload/CreateUpload";
 import { AppLayout } from "./app/layout";
+import { UploadEditor } from "./app/pages/upload/id/UploadEditor";
+import { uploadRoutes } from "./app/pages/upload/routes";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {
@@ -63,7 +65,7 @@ export default defineApp([
       ]),
       route("/", Home),
       prefix("/user", userRoutes),
-      route("/upload", [Upload]),
+      prefix("/upload", uploadRoutes),
     ]),
   ]),
 ]);

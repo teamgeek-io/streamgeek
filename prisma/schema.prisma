@@ -45,9 +45,9 @@ model Credential {
 
 
 model Video {
-  id          String      @id @default(uuid()) // Video ID (UUID-based)
+  id          String      @id // Video ID (nanoid-based, generated in app code)
   title       String
-  description String
+  description String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   thumbnailUrl String?
