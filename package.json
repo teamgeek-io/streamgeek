@@ -27,12 +27,15 @@
     "prepare": "vibe-rules install cursor"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.7.2",
     "@prisma/adapter-d1": "~6.8.2",
     "@prisma/client": "~6.8.2",
     "@simplewebauthn/browser": "^13.1.0",
     "@simplewebauthn/server": "^13.1.1",
+    "hono": "^4.8.10",
     "nanoid": "^5.1.5",
-    "rwsdk": "0.1.26"
+    "rwsdk": "0.1.26",
+    "zod": "^4.0.13"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.7.4",

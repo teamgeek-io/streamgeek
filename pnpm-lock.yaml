@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hono/zod-validator':
+        specifier: ^0.7.2
+        version: 0.7.2(hono@4.8.10)(zod@4.0.13)
       '@prisma/adapter-d1':
         specifier: ~6.8.2
         version: 6.8.2
@@ -20,12 +23,18 @@ importers:
       '@simplewebauthn/server':
         specifier: ^13.1.1
         version: 13.1.2
+      hono:
+        specifier: ^4.8.10
+        version: 4.8.10
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
       rwsdk:
         specifier: 0.1.26
         version: 0.1.26(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250712.0)
+      zod:
+        specifier: ^4.0.13
+        version: 4.0.13
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: 1.7.4
@@ -618,6 +627,12 @@ packages:
 
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
+
+  '@hono/zod-validator@0.7.2':
+    resolution: {integrity: sha512-ub5eL/NeZ4eLZawu78JpW/J+dugDAYhwqUIdp9KYScI6PZECij4Hx4UsrthlEUutqDDhPwRI0MscUfNkvn/mqQ==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.25.0 || ^4.0.0
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -1530,6 +1545,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  hono@4.8.10:
+    resolution: {integrity: sha512-DRMYbR3aFk6YET1FCSAFbgF2cWYTz5j0YAFYPECx9fmrbKBDAYnWU+YCgRTpOaatxMYN6e68U/2IG39zRP4W/A==}
+    engines: {node: '>=16.9.0'}
+
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
     engines: {node: '>= 14'}
@@ -2324,6 +2343,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.0.13:
+    resolution: {integrity: sha512-jv+zRxuZQxTrFHzxZ46ezL2FtnE+M4HIJHJEwLsZ7UjrXHltdG6HrxvqM0twoVCWxJiYf8WqKjAcjztegpkB+Q==}
+
 snapshots:
 
   '@ampproject/remapping@2.3.0':
@@ -2716,6 +2738,11 @@ snapshots:
   '@fastify/busboy@2.1.1': {}
 
   '@hexagon/base64@1.1.28': {}
+
+  '@hono/zod-validator@0.7.2(hono@4.8.10)(zod@4.0.13)':
+    dependencies:
+      hono: 4.8.10
+      zod: 4.0.13
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
@@ -3670,6 +3697,8 @@ snapshots:
 
   has-flag@4.0.0: {}
 
+  hono@4.8.10: {}
+
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.4
@@ -4512,3 +4541,5 @@ snapshots:
   zod@3.23.8: {}
 
   zod@3.25.76: {}
+
+  zod@4.0.13: {}

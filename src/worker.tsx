@@ -8,10 +8,9 @@ import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
-import { Upload } from "@/app/pages/upload/CreateUpload";
 import { AppLayout } from "./app/layout";
-import { UploadEditor } from "./app/pages/upload/id/UploadEditor";
 import { uploadRoutes } from "./app/pages/upload/routes";
+import orchestratorApp from "./app/orchestrator/routes";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {
@@ -51,6 +50,7 @@ export default defineApp([
   },
   render(Document, [
     // route("/", () => new Response("Hello, World!")),
+    prefix("/orchestrator", orchestratorApp),
     layout(AppLayout, [
       route("/protected", [
         ({ ctx }) => {

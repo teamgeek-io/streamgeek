@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 
 import { RequestInfo } from "rwsdk/worker";
 import { createVideo } from "../../shared/functions";
-import { Job, Video } from "../../../db";
 import { link } from "../../shared/links";
 
 export function CreateUpload({ ctx }: RequestInfo) {
@@ -15,8 +14,8 @@ export function CreateUpload({ ctx }: RequestInfo) {
   const handleCreateVideo = async () => {
     const result = await createVideo(title);
     if (result.success) {
-      // redirect(`/video/${result.video.id}`);
-      alert("Video created");
+      // RedwoodSDK doesn't have a client router, so this works fine 🤓
+      // See https://github.com/redwoodjs/sdk/issues/472
       window.location.href = link("/upload/:id", { id: result.video!.id });
     } else {
       setError(result.error);
