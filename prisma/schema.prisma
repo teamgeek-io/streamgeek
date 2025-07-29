@@ -86,8 +86,9 @@ model Job {
 
 model Agent {
   id          String      @id @default(uuid()) // Agent ID (UUID-based)
-  fqdn        String
+  url        String
   lastSeen    DateTime
+  createdAt   DateTime    @default(now())
   jobs Job[]
 
   @@index([id])
