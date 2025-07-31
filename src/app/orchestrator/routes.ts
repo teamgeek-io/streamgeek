@@ -13,7 +13,7 @@ import { PrismaClientKnownRequestError } from "../../../generated/prisma/interna
  * We use hono here since it's got a nice api that's based on web standards
  * so its easy to convert to RedwoodSDK routes.
  *
- * We would have a separate workers app for this, but easy enough to keep it in the same place.
+ * @todo we should have a separate agent app for this, but easy enough to keep it in the same place.
  */
 const orchestratorApp = new Hono()
   .basePath("/orchestrator")
@@ -96,4 +96,5 @@ async function orchestratorHandler({ request, params, ctx }: RequestInfo) {
   return response;
 }
 
+export type OrchestratorApp = typeof orchestratorApp;
 export default [route("*", orchestratorHandler)];

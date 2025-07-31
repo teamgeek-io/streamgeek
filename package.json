@@ -33,6 +33,7 @@
     "@simplewebauthn/browser": "^13.1.0",
     "@simplewebauthn/server": "^13.1.1",
     "hono": "^4.8.10",
+    "ky": "^1.8.2",
     "nanoid": "^5.1.5",
     "rwsdk": "0.1.26",
     "zod": "^4.0.13"

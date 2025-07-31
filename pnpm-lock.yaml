@@ -26,6 +26,9 @@ importers:
       hono:
         specifier: ^4.8.10
         version: 4.8.10
+      ky:
+        specifier: ^1.8.2
+        version: 1.8.2
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
@@ -1659,6 +1662,10 @@ packages:
 
   ky@1.7.5:
     resolution: {integrity: sha512-HzhziW6sc5m0pwi5M196+7cEBtbt0lCYi67wNsiwMUmz833wloE0gbzJPWKs1gliFKQb34huItDQX97LyOdPdA==}
+    engines: {node: '>=18'}
+
+  ky@1.8.2:
+    resolution: {integrity: sha512-XybQJ3d4Ea1kI27DoelE5ZCT3bSJlibYTtQuMsyzKox3TMyayw1asgQdl54WroAm+fIA3ZCr8zXW2RpR7qWVpA==}
     engines: {node: '>=18'}
 
   kysely-do@0.0.1-rc.1:
@@ -3785,6 +3792,8 @@ snapshots:
   kleur@4.1.5: {}
 
   ky@1.7.5: {}
+
+  ky@1.8.2: {}
 
   kysely-do@0.0.1-rc.1(kysely@0.28.3):
     dependencies:
