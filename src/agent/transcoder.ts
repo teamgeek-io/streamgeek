@@ -124,8 +124,19 @@ export async function processPresets(input: URL) {
   console.time("process_presets");
   const input_extension = extname(input.pathname);
   const input_filename = decodeURI(basename(input.pathname, input_extension));
+
+  const [_, input_height] = await getResolution(decodeURI(input.pathname));
+  const input_resolution = input_height; // Use height since presets are defined by height
+
+  const relevant_presets = presets.filter(
+    (preset) => preset.resolution <= input_resolution
+  );
+  console.log(
+    `Processing ${relevant_presets.length} relevant presets out of ${presets.length} total presets`
+  );
+
   const results: TranscodeResult[] = [];
-  for (const preset of presets) {
+  for (const preset of relevant_presets) {
     console.timeLog("process_presets", `transcoding ${preset.resolution}p`);
     const transcode_result = await transcode(input, preset);
     console.log(transcode_result);
