@@ -1,5 +1,5 @@
 import { hc } from "hono/client";
-import type { OrchestratorApp } from "./routes";
+import type { OrchestratorApp } from "./server";
 import ky from "ky";
 
 /**

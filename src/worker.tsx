@@ -10,7 +10,7 @@ import { type User, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
 import { AppLayout } from "./app/layout";
 import { uploadRoutes } from "./app/pages/upload/routes";
-import orchestratorApp from "./app/orchestrator/routes";
+import orchestratorApp from "./orchestrator/server";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {

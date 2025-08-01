@@ -24,9 +24,11 @@
     "generate": "rw-scripts ensure-env && prisma generate && wrangler types",
     "check": "npm run generate && npm run types",
     "types": "tsc",
-    "prepare": "vibe-rules install cursor"
+    "prepare": "vibe-rules install cursor",
+    "agent:dev": "pnpx tsx watch --env-file=./src/agent/.env ./src/agent/index.ts"
   },
   "dependencies": {
+    "@hono/node-server": "^1.18.0",
     "@hono/zod-validator": "^0.7.2",
     "@prisma/adapter-d1": "~6.8.2",
     "@prisma/client": "~6.8.2",

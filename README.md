@@ -8,21 +8,57 @@ POC for rolling our own video streaming! 🎥🚀🔥
 - Passkey authentication (Webauthn)
 - Storage (via R2)
 
-## Creating your project
+## First things first 🚀
 
-```shell
-npx create-rwsdk my-project-name
-cd my-project-name
-npm install
+Copy the example env to env.local:
+
+```bash
+cp .env.example .env
 ```
 
-## Running the dev server
+Ensure you have [fnm](https://github.com/Schniz/fnm) or [nvm](https://github.com/nvm-sh/nvm) installed
+
+Install the node version:
+
+```bash
+
+nvm install
+
+# OR
+
+fnm install
+
+```
+
+Enable pnpm:
+
+```bash
+
+corepack enable
+
+```
+
+🛑 STOP 👉 Ensure that you're using `pnpm` and NOT any other package manager 🤭
+
+Then, install deps:
+
+```bash
+pnpm i
+```
+
+## Running the main app
 
 ```shell
 pnpm run dev
 ```
 
-Point your browser to the URL displayed in the terminal (e.g. `http://localhost:5173/`). You should see a "Hello World" message in your browser.
+## Running the agent app
+
+Copy .env.dev.example to .env in the `/src/agent` route
+
+```shell
+pnpm run agent:dev
+```
 
 ## Deploying your app
 

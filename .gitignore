@@ -68,3 +68,5 @@ coverage
 .wrangler
 
 generated/
+
+agent_id.txt

@@ -3,8 +3,8 @@ import { Hono } from "hono";
 import { route } from "rwsdk/router";
 import { RequestInfo } from "rwsdk/worker";
 import { z } from "zod";
-import { db } from "../../db";
-import { PrismaClientKnownRequestError } from "../../../generated/prisma/internal/prismaNamespace";
+import { db } from "../db";
+import { PrismaClientKnownRequestError } from "../../generated/prisma/internal/prismaNamespace";
 
 /**
  * All of our orchestrator api endpoints live in this hono app.

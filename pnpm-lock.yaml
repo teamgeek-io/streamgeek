@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hono/node-server':
+        specifier: ^1.18.0
+        version: 1.18.0(hono@4.8.10)
       '@hono/zod-validator':
         specifier: ^0.7.2
         version: 0.7.2(hono@4.8.10)(zod@4.0.13)
@@ -630,6 +633,12 @@ packages:
 
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
+
+  '@hono/node-server@1.18.0':
+    resolution: {integrity: sha512-CJ0H3/ouk/JWnyiuYOJLdpuWhO2D2BTNigHaFixnW3CrwZb+E+4s/KoFkcikHXcVmXoxaLJx1nlGa3JChEFtFA==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@hono/zod-validator@0.7.2':
     resolution: {integrity: sha512-ub5eL/NeZ4eLZawu78JpW/J+dugDAYhwqUIdp9KYScI6PZECij4Hx4UsrthlEUutqDDhPwRI0MscUfNkvn/mqQ==}
@@ -2745,6 +2754,10 @@ snapshots:
   '@fastify/busboy@2.1.1': {}
 
   '@hexagon/base64@1.1.28': {}
+
+  '@hono/node-server@1.18.0(hono@4.8.10)':
+    dependencies:
+      hono: 4.8.10
 
   '@hono/zod-validator@0.7.2(hono@4.8.10)(zod@4.0.13)':
     dependencies:
