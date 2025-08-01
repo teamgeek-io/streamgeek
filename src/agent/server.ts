@@ -1,14 +1,17 @@
 import { Hono } from "hono";
-import { Server } from "@tus/server";
-import { FileStore } from "@tus/file-store";
+import { cors } from "hono/cors";
+
 import fs from "fs/promises";
+import { FileStore } from "@tus/file-store";
+import { Server } from "@tus/server";
 
 const tusServer = new Server({
-  path: "/uploads",
+  path: "/upload",
   datastore: new FileStore({ directory: "./uploads" }),
 });
 
 const agentApp = new Hono()
+  .use("*", cors()) // TODO: restrict to only the web app
   .get("/", (c) => {
     return c.text("Hello Agent!");
   })
@@ -20,7 +23,9 @@ const agentApp = new Hono()
       agentUrl,
     });
   })
-  .use("/upload", (c) => tusServer.handle(c.req.raw, c.res.raw));
+  .all("/upload*", (c) => {
+    return tusServer.handleWeb(c.req.raw);
+  });
 
 export type AgentApp = typeof agentApp;
 
