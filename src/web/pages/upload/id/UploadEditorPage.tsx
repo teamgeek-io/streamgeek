@@ -12,5 +12,13 @@ export async function UploadEditorPage({ ctx, params }: RequestInfo) {
   if (!video) {
     return <div>Video not found</div>;
   }
-  return <UploadEditor video={video} />;
+
+  const existingJob = await db.job.findFirst({
+    where: {
+      videoId: id,
+      status: "queued",
+    },
+  });
+
+  return <UploadEditor video={video} existingJob={existingJob} />;
 }

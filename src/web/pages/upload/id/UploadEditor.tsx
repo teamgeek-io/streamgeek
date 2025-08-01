@@ -6,17 +6,24 @@ import { RequestInfo } from "rwsdk/worker";
 import { createJob } from "../../../shared/functions";
 import { Job, Video } from "../../../../db";
 
-export function UploadEditor({ video }: { video: Video }) {
+export function UploadEditor({
+  video,
+  existingJob,
+}: {
+  video: Video;
+  existingJob: Job | null;
+}) {
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<Error | null>(null);
-  const [job, setJob] = useState<Job | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [job, setJob] = useState<Job | null>(existingJob);
 
   const handleCreateJob = async () => {
-    const result = await createJob();
+    const result = await createJob(video.id);
+
     if (result.success) {
       setJob(result.job as Job);
     } else {
-      setError(result.error);
+      setError(result.error as string);
       setJob(null);
     }
   };
@@ -25,14 +32,18 @@ export function UploadEditor({ video }: { video: Video }) {
   return (
     <div>
       <h1>My video: {video.title}</h1>
-      {job && <p>Job created: {job.id}</p>}
-      {error && <p>Error: {error.message}</p>}
-      <button
-        onClick={() => startTransition(() => handleCreateJob())}
-        disabled={isPending}
-      >
-        Start a job
-      </button>
+
+      {error && <p>Error: {error}</p>}
+      {job ? (
+        <p>Job ready: {job.id}</p>
+      ) : (
+        <button
+          onClick={() => startTransition(() => handleCreateJob())}
+          disabled={isPending}
+        >
+          Start a job
+        </button>
+      )}
     </div>
   );
 }

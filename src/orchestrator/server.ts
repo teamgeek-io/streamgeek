@@ -56,10 +56,13 @@ const orchestratorApp = new Hono()
           },
         });
 
-        return c.json({ message: "Agent updated", agent });
+        return c.json({ message: "Agent updated", agent, success: true });
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
-          return c.json({ error: error.message }, 400);
+          return c.json(
+            { success: false, agent: null, error: error.message },
+            400
+          );
         }
         return c.json({ error: "Internal server error" }, 500);
       }
