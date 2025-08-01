@@ -69,6 +69,33 @@ export const createJob = async (videoId: string) => {
   return { success: true, job: { ...job, agent }, error: null };
 };
 
+export const startJob = async ({
+  jobId,
+  sourceFileId,
+}: {
+  jobId: string;
+  sourceFileId: string;
+}) => {
+  const job = await db.job.update({
+    where: { id: jobId },
+    data: { status: "encoding", sourceFileId },
+    include: {
+      agent: true,
+    },
+  });
+
+  const agentClient = createAgentClient(job.agent.url);
+
+  await agentClient.start[":jobId"].$post({
+    param: { jobId },
+    json: {
+      sourceFileId,
+    },
+  });
+
+  return { success: true, job, error: null };
+};
+
 /**
  * @returns Agent that is available to take a job
  */

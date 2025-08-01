@@ -74,7 +74,7 @@ model Job {
   updatedAt   DateTime    @updatedAt
   status      JobStatus      @default(queued) 
   agentId     String
-  outputUrl     String?
+  sourceFileId      String?
   errorMessage  String?
   agent Agent @relation(fields: [agentId], references: [id])
 

@@ -17,7 +17,9 @@ export async function UploadEditorPage({ ctx, params }: RequestInfo) {
   let existingJob = await db.job.findFirst({
     where: {
       videoId: id,
-      status: "queued",
+      status: {
+        in: ["queued", "encoding"],
+      },
     },
     include: {
       agent: true,

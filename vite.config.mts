@@ -9,4 +9,9 @@ export default defineConfig({
     }),
     redwood(),
   ],
+  server: {
+    watch: {
+      ignored: ["**/output/**"],
+    },
+  },
 });

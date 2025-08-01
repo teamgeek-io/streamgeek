@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 
 import { RequestInfo } from "rwsdk/worker";
-import { createJob } from "../../../shared/functions";
+import { createJob, startJob } from "../../../shared/functions";
 import { Agent, Job, Video } from "../../../../db";
-import { Uploader } from "./uploader";
+import { Uploader, UploadResult } from "./uploader";
 
 export function UploadEditor({
   video,
@@ -16,6 +16,7 @@ export function UploadEditor({
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const [job, setJob] = useState(existingJob);
 
   const handleCreateJob = async () => {
@@ -30,6 +31,15 @@ export function UploadEditor({
     }
   };
 
+  const handleUploadComplete = async (result: UploadResult) => {
+    setUploadResult(result);
+
+    await startJob({
+      jobId: job!.id,
+      sourceFileId: result.uploadUrl!.split("/").pop()!,
+    });
+  };
+
   // ToDo: need auth!
   return (
     <div>
@@ -38,10 +48,22 @@ export function UploadEditor({
       {error && <p>Error: {error}</p>}
       {job ? (
         <div>
-          <p>
-            Job ready: {job.id} on {job.agentId}
-          </p>
-          <Uploader endpoint={`${job.agent.url}/upload`} />
+          {uploadResult || job.status === "encoding" ? (
+            <p>Upload complete, encoding in progress...</p>
+          ) : (
+            <>
+              <p>
+                Job sending:
+                {job.id} on {job.agentId}
+              </p>
+              <Uploader
+                endpoint={`${job.agent.url}/upload`}
+                onUploadComplete={(result) =>
+                  startTransition(() => handleUploadComplete(result))
+                }
+              />
+            </>
+          )}
         </div>
       ) : (
         <button

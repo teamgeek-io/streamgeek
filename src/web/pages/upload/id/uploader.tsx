@@ -18,17 +18,24 @@ import "@uppy/progress-bar/dist/style.min.css";
 import { useState, useEffect } from "react";
 import { UppyOptionsWithOptionalRestrictions } from "@uppy/core/lib/Uppy";
 
-interface UploadResult {
+export interface UploadResult {
   success: boolean;
-  fileId?: string;
+  uploadUrl?: string;
   error?: string;
 }
 
 interface UploaderProps {
   endpoint: string;
   onUploadComplete?: (result: UploadResult) => void;
-  maxFileSize?: number; // in bytes
-  allowedFileTypes?: string[]; // e.g., ['image/*', 'video/*']
+  maxFileSize?: number;
+  allowedFileTypes?: string[];
+}
+
+interface ProgressDetails {
+  fileName: string;
+  uploadedMB: number;
+  totalMB: number;
+  percentage: number;
 }
 
 function createUppy(
@@ -42,21 +49,20 @@ function createUppy(
     },
   }).use(Tus, { endpoint });
 
-  // Handle upload completion
   uppy.on("complete", (result) => {
     const successful = Boolean(
       result.successful && result.successful.length > 0
     );
-    const fileId = successful && result.successful?.[0]?.response?.uploadURL;
+
+    const uploadUrl = successful && result.successful?.[0]?.response?.uploadURL;
 
     onComplete?.({
       success: successful,
-      fileId: fileId || undefined,
+      uploadUrl: uploadUrl || undefined,
       error: successful ? undefined : "Upload failed",
     });
   });
 
-  // Handle upload errors
   uppy.on("upload-error", (file, error) => {
     onComplete?.({
       success: false,
@@ -67,61 +73,100 @@ function createUppy(
   return uppy;
 }
 
-export function Uploader({
-  endpoint,
-  onUploadComplete,
-  maxFileSize,
-  allowedFileTypes,
-}: UploaderProps) {
+export function Uploader({ endpoint, onUploadComplete }: UploaderProps) {
   const [uppy] = useState(() => createUppy(endpoint, onUploadComplete));
+  const [fileAdded, setFileAdded] = useState(false);
+  const [progressDetails, setProgressDetails] =
+    useState<ProgressDetails | null>(null);
 
-  useEffect(() => {
-    const restrictions: UppyOptionsWithOptionalRestrictions<
-      Meta,
-      Body
-    >["restrictions"] = {
-      maxNumberOfFiles: 1,
-    };
-
-    if (maxFileSize) {
-      restrictions.maxFileSize = maxFileSize;
-    }
-
-    if (allowedFileTypes) {
-      restrictions.allowedFileTypes = allowedFileTypes;
-    }
-
-    uppy.setOptions({ restrictions });
-  }, [uppy, maxFileSize, allowedFileTypes]);
-
-  // Auto-upload when file is selected
   useEffect(() => {
     const handleFileAdded = () => {
       if (uppy.getFiles().length > 0) {
+        setFileAdded(true);
         uppy.upload();
       }
     };
 
+    const handleProgress = (file: any, progress: any) => {
+      // Handle the case where file is just a number (percentage) and progress is undefined
+      if (typeof file === "number" && !progress) {
+        return;
+      }
+
+      const fileData = uppy.getFile(file.id);
+
+      if (fileData && progress) {
+        const uploadedBytes = progress.bytesUploaded;
+        const totalBytes = progress.bytesTotal;
+        const percentage = (uploadedBytes / totalBytes) * 100;
+
+        const details = {
+          fileName: fileData.name || "Unknown file",
+          uploadedMB: Math.round((uploadedBytes / (1024 * 1024)) * 100) / 100,
+          totalMB: Math.round((totalBytes / (1024 * 1024)) * 100) / 100,
+          percentage,
+        };
+
+        setProgressDetails(details);
+      }
+    };
+
+    const handleUploadSuccess = () => {
+      // Don't clear immediately, let the user see the final state
+      setTimeout(() => {
+        setProgressDetails(null);
+      }, 2000); // Keep showing for 2 seconds after completion
+    };
+
     uppy.on("file-added", handleFileAdded);
+    uppy.on("upload-progress", handleProgress);
+    uppy.on("upload-success", handleUploadSuccess);
 
     return () => {
       uppy.off("file-added", handleFileAdded);
+      uppy.off("upload-progress", handleProgress);
+      uppy.off("upload-success", handleUploadSuccess);
     };
   }, [uppy]);
 
   return (
     <UppyContextProvider uppy={uppy}>
       <div className="uploader-container">
-        <DragDrop
-          uppy={uppy}
-          locale={{
-            strings: {
-              dropHereOr: "Drop file here or %{browse}",
-              browse: "browse",
-            },
-          }}
-        />
+        {!fileAdded && (
+          <DragDrop
+            uppy={uppy}
+            locale={{
+              strings: {
+                dropHereOr: "Drop file here or %{browse}",
+                browse: "browse",
+              },
+            }}
+          />
+        )}
+        {/* ToDo: custom progress bar */}
         <ProgressBar uppy={uppy} />
+
+        {progressDetails && (
+          <div
+            className="upload-details"
+            style={{
+              marginTop: "10px",
+              padding: "10px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "4px",
+              fontSize: "14px",
+            }}
+          >
+            <div style={{ marginBottom: "5px" }}>
+              <strong>File:</strong> {progressDetails.fileName}
+            </div>
+            <div>
+              <strong>Progress:</strong> {progressDetails.uploadedMB} /{" "}
+              {progressDetails.totalMB} MB (
+              {progressDetails.percentage.toFixed(1)}%)
+            </div>
+          </div>
+        )}
       </div>
     </UppyContextProvider>
   );
