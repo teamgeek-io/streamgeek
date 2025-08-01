@@ -15,3 +15,11 @@ export async function getResolution(input: string): Promise<Resolution> {
   });
   return promise;
 }
+
+export type VideoOrientation = "horizontal" | "vertical";
+export async function getVideoOrientation(
+  input: URL
+): Promise<VideoOrientation> {
+  const [width, height] = await getResolution(decodeURI(input.pathname));
+  return width >= height ? "horizontal" : "vertical";
+}

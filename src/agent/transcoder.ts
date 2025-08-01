@@ -8,7 +8,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import ffmpeg from "fluent-ffmpeg";
 import { basename, extname } from "node:path";
-import { getResolution } from "./utils";
+import { getResolution, getVideoOrientation, VideoOrientation } from "./utils";
 
 type Preset = {
   resolution: number;
@@ -48,7 +48,11 @@ type TranscodeResult = {
   bitrate: number;
 };
 
-async function transcode(input: URL, preset: Preset): Promise<TranscodeResult> {
+async function transcode(
+  input: URL,
+  preset: Preset,
+  orientation: VideoOrientation
+): Promise<TranscodeResult> {
   const input_extension = extname(input.pathname);
   const input_filename = decodeURI(basename(input.pathname, input_extension));
   const output_folder = new URL(
@@ -56,9 +60,17 @@ async function transcode(input: URL, preset: Preset): Promise<TranscodeResult> {
   );
   const m3u8_path = `${output_folder}/${input_filename}_${preset.resolution}p.m3u8`;
   console.log({ input_filename, output_folder });
-  console.log(`transcoding ${input.pathname} to ${preset.resolution}p`);
+  console.log(
+    `transcoding ${input.pathname} to ${preset.resolution}p (${orientation})`
+  );
   await mkdir(output_folder, { recursive: true });
   const { promise, resolve, reject } = Promise.withResolvers<TranscodeResult>();
+
+  const scaleFilter =
+    orientation === "vertical"
+      ? `scale=${preset.resolution}:-2` // For vertical videos, scale by width
+      : `scale=-2:${preset.resolution}`; // For horizontal videos, scale by height
+
   ffmpeg(decodeURI(input.pathname))
     // .videoCodec('h264_videotoolbox')
     .videoCodec("libx264")
@@ -67,7 +79,7 @@ async function transcode(input: URL, preset: Preset): Promise<TranscodeResult> {
     .audioBitrate("128k")
     .outputOptions([
       "-filter:v",
-      `scale=-2:${preset.resolution}`,
+      scaleFilter,
       "-preset",
       "veryfast",
       "-crf",
@@ -125,20 +137,26 @@ export async function processPresets(input: URL) {
   const input_extension = extname(input.pathname);
   const input_filename = decodeURI(basename(input.pathname, input_extension));
 
-  const [_, input_height] = await getResolution(decodeURI(input.pathname));
-  const input_resolution = input_height; // Use height since presets are defined by height
+  const [input_width, input_height] = await getResolution(
+    decodeURI(input.pathname)
+  );
+  const orientation = await getVideoOrientation(input);
+
+  // Determine the relevant resolution based on orientation
+  const input_resolution =
+    orientation === "vertical" ? input_width : input_height;
 
   const relevant_presets = presets.filter(
     (preset) => preset.resolution <= input_resolution
   );
   console.log(
-    `Processing ${relevant_presets.length} relevant presets out of ${presets.length} total presets`
+    `Processing ${relevant_presets.length} relevant presets out of ${presets.length} total presets for ${orientation} video`
   );
 
   const results: TranscodeResult[] = [];
   for (const preset of relevant_presets) {
     console.timeLog("process_presets", `transcoding ${preset.resolution}p`);
-    const transcode_result = await transcode(input, preset);
+    const transcode_result = await transcode(input, preset, orientation);
     console.log(transcode_result);
     results.push(transcode_result);
   }
