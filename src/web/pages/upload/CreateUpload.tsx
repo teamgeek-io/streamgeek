@@ -14,7 +14,7 @@ export function CreateUpload({ ctx }: RequestInfo) {
   const handleCreateVideo = async () => {
     const result = await createVideo(title);
     if (result.success) {
-      // RedwoodSDK doesn't have a client router, so this works fine 🤓
+      // RedwoodSDK doesn't have a client router/support for redirects on form actions, so this works fine 🤓
       // See https://github.com/redwoodjs/sdk/issues/472
       window.location.href = link("/upload/:id", { id: result.video!.id });
     } else {
@@ -26,21 +26,22 @@ export function CreateUpload({ ctx }: RequestInfo) {
   return (
     <div>
       <h1>Create a video</h1>
-
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Enter a title for your video"
-      />
-
-      {error && <p>Error: {error.message}</p>}
-      <button
-        onClick={() => startTransition(() => handleCreateVideo())}
-        disabled={isPending}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(() => handleCreateVideo());
+        }}
       >
-        Create video
-      </button>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter a title for your video"
+        />
+
+        {error && <p>Error: {error.message}</p>}
+        <button disabled={isPending}>Create video</button>
+      </form>
     </div>
   );
 }

@@ -49,7 +49,6 @@ export default defineApp([
     }
   },
   render(Document, [
-    // route("/", () => new Response("Hello, World!")),
     prefix("/orchestrator", orchestratorApp),
     layout(AppLayout, [
       route("/protected", [
