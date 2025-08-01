@@ -4,24 +4,25 @@ import { useState, useTransition } from "react";
 
 import { RequestInfo } from "rwsdk/worker";
 import { createJob } from "../../../shared/functions";
-import { Job, Video } from "../../../../db";
+import { Agent, Job, Video } from "../../../../db";
+import { Uploader } from "./uploader";
 
 export function UploadEditor({
   video,
   existingJob,
 }: {
   video: Video;
-  existingJob: Job | null;
+  existingJob: (Job & { agent: Agent }) | null;
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [job, setJob] = useState<Job | null>(existingJob);
+  const [job, setJob] = useState(existingJob);
 
   const handleCreateJob = async () => {
     const result = await createJob(video.id);
 
     if (result.success) {
-      setJob(result.job as Job);
+      setJob(result.job);
     } else {
       setError(result.error as string);
       setJob(null);
@@ -35,7 +36,12 @@ export function UploadEditor({
 
       {error && <p>Error: {error}</p>}
       {job ? (
-        <p>Job ready: {job.id}</p>
+        <div>
+          <p>
+            Job ready: {job.id} on {job.agentId}
+          </p>
+          <Uploader endpoint={`${job.agent.url}/upload`} />
+        </div>
       ) : (
         <button
           onClick={() => startTransition(() => handleCreateJob())}

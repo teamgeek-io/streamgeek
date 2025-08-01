@@ -1,5 +1,12 @@
 import { Hono } from "hono";
+import { Server } from "@tus/server";
+import { FileStore } from "@tus/file-store";
 import fs from "fs/promises";
+
+const tusServer = new Server({
+  path: "/uploads",
+  datastore: new FileStore({ directory: "./uploads" }),
+});
 
 const agentApp = new Hono()
   .get("/", (c) => {
@@ -12,7 +19,8 @@ const agentApp = new Hono()
       agentId,
       agentUrl,
     });
-  });
+  })
+  .use("/upload", (c) => tusServer.handle(c.req.raw, c.res.raw));
 
 export type AgentApp = typeof agentApp;
 

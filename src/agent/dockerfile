@@ -9,9 +9,9 @@ COPY package.json pnpm-lock.yaml ./
 RUN corepack enable
 
 # Install only specific packages you need
-RUN pnpm install --prod hono ky
+RUN pnpm install --prod hono ky @tus/server @tus/file-store      
 
-# TODO IN DEPLOYMENT PERSIST agent_id.txt
+# TODO IN DEPLOYMENT PERSIST agent_id.txt and /uploads
 
 # Copy your agent code
 COPY src/agent ./src/agent

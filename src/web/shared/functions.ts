@@ -66,7 +66,7 @@ export const createJob = async (videoId: string) => {
     },
   });
 
-  return { success: true, job, error: null };
+  return { success: true, job: { ...job, agent }, error: null };
 };
 
 /**
