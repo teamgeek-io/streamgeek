@@ -29,12 +29,18 @@ importers:
       '@uppy/core':
         specifier: ^4.5.2
         version: 4.5.2
-      '@uppy/dashboard':
-        specifier: ^4.4.2
-        version: 4.4.2(@uppy/core@4.5.2)
+      '@uppy/drag-drop':
+        specifier: ^4.2.2
+        version: 4.2.2(@uppy/core@4.5.2)
+      '@uppy/file-input':
+        specifier: ^4.2.2
+        version: 4.2.2(@uppy/core@4.5.2)
+      '@uppy/progress-bar':
+        specifier: ^4.3.2
+        version: 4.3.2(@uppy/core@4.5.2)
       '@uppy/react':
         specifier: ^4.5.1
-        version: 4.5.1(@uppy/core@4.5.2)(@uppy/dashboard@4.4.2(@uppy/core@4.5.2))(@uppy/screen-capture@4.4.1(@uppy/core@4.5.2))(@uppy/status-bar@4.2.2(@uppy/core@4.5.2))(@uppy/webcam@4.3.1(@uppy/core@4.5.2))(react-dom@19.2.0-canary-39cad7af-20250411(react@19.2.0-canary-39cad7af-20250411))(react@19.2.0-canary-39cad7af-20250411)
+        version: 4.5.1(@uppy/core@4.5.2)(@uppy/dashboard@4.4.2(@uppy/core@4.5.2))(@uppy/drag-drop@4.2.2(@uppy/core@4.5.2))(@uppy/file-input@4.2.2(@uppy/core@4.5.2))(@uppy/progress-bar@4.3.2(@uppy/core@4.5.2))(@uppy/screen-capture@4.4.1(@uppy/core@4.5.2))(@uppy/status-bar@4.2.2(@uppy/core@4.5.2))(@uppy/webcam@4.3.1(@uppy/core@4.5.2))(react-dom@19.2.0-canary-39cad7af-20250411(react@19.2.0-canary-39cad7af-20250411))(react@19.2.0-canary-39cad7af-20250411)
       '@uppy/tus':
         specifier: ^4.3.1
         version: 4.3.1(@uppy/core@4.5.2)
@@ -1134,6 +1140,11 @@ packages:
     peerDependencies:
       '@uppy/core': ^4.5.2
 
+  '@uppy/drag-drop@4.2.2':
+    resolution: {integrity: sha512-SlVl+lHC8TvCKW4B9L4pdb0n8mEVgACHjKXGWcy7EUsTrRphv3ugmkbIFL57XpmFR+AFMuPblOsKq/9nkPkHOQ==}
+    peerDependencies:
+      '@uppy/core': ^4.5.2
+
   '@uppy/dropbox@4.3.1':
     resolution: {integrity: sha512-slNQ4XqRjL5zXRFsJHkkvLs++4I1/LfaJbiWh8XZ12d/oxl8mM5JJUkYyZ+RDfGcUGhA/5HQrqgLG8INGqTRWQ==}
     peerDependencies:
@@ -1143,6 +1154,11 @@ packages:
     resolution: {integrity: sha512-TgoEoqbZXY8KG4zKQDTl1FJh1jApRrfYlxBCODiQdh2d6A1uf9Gjj8ZUxOtDiCnupKPb+ufRw6kilkfJAllEuw==}
     peerDependencies:
       '@uppy/core': ^4.5.1
+
+  '@uppy/file-input@4.2.2':
+    resolution: {integrity: sha512-tQklK5C1slZWQlMQYQPBJuhfs0e5w1sRb0VwYMt8P297rB1BUcyOjkVH79DAYHkkgXo9aQKUiZSuVoN89tlLjQ==}
+    peerDependencies:
+      '@uppy/core': ^4.5.2
 
   '@uppy/google-drive@4.4.1':
     resolution: {integrity: sha512-iV0fHoVNOJ5zVSHd39fGker7i5sIhO1dnaDZ8KLxUQvB2gq77bsnSovyfT9OzTzL0xrdlcNwlQITPbM9+ojsaA==}
@@ -1168,6 +1184,11 @@ packages:
     resolution: {integrity: sha512-ez432cIKA747ZDfWJRT9T0ENYGfgxX9sDgZR8giTg3C6CZEXZmy66ANNgPgFTcKxbfFqTj+VELBbalplEcuJVw==}
     peerDependencies:
       '@uppy/core': ^4.5.1
+
+  '@uppy/progress-bar@4.3.2':
+    resolution: {integrity: sha512-5BOhq49xPpBTlEVsEIRLkV+Hgb0qTuey8XKyrmrSetcgtolKLwtlDjrOWmUcxGYI3bkMbdeJulF9aiR8sSqQ6A==}
+    peerDependencies:
+      '@uppy/core': ^4.5.2
 
   '@uppy/provider-views@4.5.1':
     resolution: {integrity: sha512-Qz/vAoiszRParpjpZGG/ZrMiaz6auzsesLo1/UNgY6PiSklwUXmAXq/Zxagxk+Vc13U4/helgFp9IeRBMYD//A==}
@@ -3634,6 +3655,12 @@ snapshots:
       preact: 10.27.0
       shallow-equal: 3.1.0
 
+  '@uppy/drag-drop@4.2.2(@uppy/core@4.5.2)':
+    dependencies:
+      '@uppy/core': 4.5.2
+      '@uppy/utils': 6.2.2
+      preact: 10.27.0
+
   '@uppy/dropbox@4.3.1(@uppy/core@4.5.2)':
     dependencies:
       '@uppy/companion-client': 4.5.1(@uppy/core@4.5.2)
@@ -3648,6 +3675,12 @@ snapshots:
       '@uppy/core': 4.5.2
       '@uppy/provider-views': 4.5.1(@uppy/core@4.5.2)
       '@uppy/utils': 6.2.1
+      preact: 10.27.0
+
+  '@uppy/file-input@4.2.2(@uppy/core@4.5.2)':
+    dependencies:
+      '@uppy/core': 4.5.2
+      '@uppy/utils': 6.2.2
       preact: 10.27.0
 
   '@uppy/google-drive@4.4.1(@uppy/core@4.5.2)':
@@ -3687,6 +3720,12 @@ snapshots:
       '@uppy/utils': 6.2.1
       preact: 10.27.0
 
+  '@uppy/progress-bar@4.3.2(@uppy/core@4.5.2)':
+    dependencies:
+      '@uppy/core': 4.5.2
+      '@uppy/utils': 6.2.2
+      preact: 10.27.0
+
   '@uppy/provider-views@4.5.1(@uppy/core@4.5.2)':
     dependencies:
       '@uppy/core': 4.5.2
@@ -3705,7 +3744,7 @@ snapshots:
       p-queue: 8.1.0
       preact: 10.27.0
 
-  '@uppy/react@4.5.1(@uppy/core@4.5.2)(@uppy/dashboard@4.4.2(@uppy/core@4.5.2))(@uppy/screen-capture@4.4.1(@uppy/core@4.5.2))(@uppy/status-bar@4.2.2(@uppy/core@4.5.2))(@uppy/webcam@4.3.1(@uppy/core@4.5.2))(react-dom@19.2.0-canary-39cad7af-20250411(react@19.2.0-canary-39cad7af-20250411))(react@19.2.0-canary-39cad7af-20250411)':
+  '@uppy/react@4.5.1(@uppy/core@4.5.2)(@uppy/dashboard@4.4.2(@uppy/core@4.5.2))(@uppy/drag-drop@4.2.2(@uppy/core@4.5.2))(@uppy/file-input@4.2.2(@uppy/core@4.5.2))(@uppy/progress-bar@4.3.2(@uppy/core@4.5.2))(@uppy/screen-capture@4.4.1(@uppy/core@4.5.2))(@uppy/status-bar@4.2.2(@uppy/core@4.5.2))(@uppy/webcam@4.3.1(@uppy/core@4.5.2))(react-dom@19.2.0-canary-39cad7af-20250411(react@19.2.0-canary-39cad7af-20250411))(react@19.2.0-canary-39cad7af-20250411)':
     dependencies:
       '@uppy/components': 0.3.1
       '@uppy/core': 4.5.2
@@ -3716,6 +3755,9 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.2.0-canary-39cad7af-20250411)
     optionalDependencies:
       '@uppy/dashboard': 4.4.2(@uppy/core@4.5.2)
+      '@uppy/drag-drop': 4.2.2(@uppy/core@4.5.2)
+      '@uppy/file-input': 4.2.2(@uppy/core@4.5.2)
+      '@uppy/progress-bar': 4.3.2(@uppy/core@4.5.2)
       '@uppy/screen-capture': 4.4.1(@uppy/core@4.5.2)
       '@uppy/status-bar': 4.2.2(@uppy/core@4.5.2)
       '@uppy/webcam': 4.3.1(@uppy/core@4.5.2)

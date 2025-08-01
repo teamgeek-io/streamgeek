@@ -19,6 +19,7 @@ export function UploadEditor({
   const [job, setJob] = useState(existingJob);
 
   const handleCreateJob = async () => {
+    setError(null);
     const result = await createJob(video.id);
 
     if (result.success) {
