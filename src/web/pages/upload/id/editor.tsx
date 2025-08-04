@@ -6,6 +6,7 @@ import { RequestInfo } from "rwsdk/worker";
 import { createJob, startJob } from "../../../shared/functions";
 import { Agent, Job, Video } from "../../../../db";
 import { Uploader, UploadResult } from "./uploader";
+import { TranscodeStatus } from "./transcode-status";
 
 export function UploadEditor({
   video,
@@ -49,7 +50,10 @@ export function UploadEditor({
       {job ? (
         <div>
           {uploadResult || job.status === "encoding" ? (
-            <p>Upload complete, encoding in progress...</p>
+            <>
+              <p>Upload complete, encoding in progress...</p>
+              <TranscodeStatus url={job.agent.url} jobId={job.id} />
+            </>
           ) : (
             <>
               <p>

@@ -132,8 +132,12 @@ async function transcode(
   return promise;
 }
 
-export async function processPresets(input: URL) {
+export async function processPresets(
+  input: URL,
+  onChange?: (message: string) => void
+) {
   console.time("process_presets");
+  onChange?.("Starting transcoding");
   const input_extension = extname(input.pathname);
   const input_filename = decodeURI(basename(input.pathname, input_extension));
 
@@ -154,13 +158,19 @@ export async function processPresets(input: URL) {
   );
 
   const results: TranscodeResult[] = [];
-  for (const preset of relevant_presets) {
+  for (const [i, preset] of relevant_presets.entries()) {
+    onChange?.(
+      `Transcoding ${preset.resolution}p (${i + 1} of ${
+        relevant_presets.length
+      })`
+    );
     console.timeLog("process_presets", `transcoding ${preset.resolution}p`);
     const transcode_result = await transcode(input, preset, orientation);
     console.log(transcode_result);
     results.push(transcode_result);
   }
   const playlist = await generatePlaylist(results);
+  onChange?.("Transcoding complete");
   await writeFile(`./output/${input_filename}/master.m3u8`, playlist);
   console.timeEnd("process_presets");
 }
