@@ -53,7 +53,7 @@ export function UploadEditor({
           ) : (
             <>
               <p>
-                Job sending:
+                Job:
                 {job.id} on {job.agentId}
               </p>
               <Uploader
