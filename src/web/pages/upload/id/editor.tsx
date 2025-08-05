@@ -52,7 +52,11 @@ export function UploadEditor({
           {uploadResult || job.status === "encoding" ? (
             <>
               <p>Upload complete, encoding in progress...</p>
-              <TranscodeStatus url={job.agent.url} jobId={job.id} />
+              <TranscodeStatus
+                url={job.agent.url}
+                jobId={job.id}
+                videoId={video.id}
+              />
             </>
           ) : (
             <>

@@ -9,6 +9,7 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { processPresets } from "./transcoder";
 import { EventEmitter } from "events";
+import createOrchestratorClient from "../orchestrator/client";
 
 const tusServer = new Server({
   path: "/upload",
@@ -16,6 +17,12 @@ const tusServer = new Server({
 });
 
 const transcodingEvents = new EventEmitter();
+
+const COMPLETE_MESSAGE = "complete";
+
+const orchestratorClient = createOrchestratorClient(
+  process.env.ORCHESTRATOR_URL!
+);
 
 const agentApp = new Hono()
   .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! })) // TODO: restrict to only the web app
@@ -41,11 +48,27 @@ const agentApp = new Hono()
         `file://${process.cwd()}/input/${sourceFileId}`
       );
 
-      // We sneaky dont await here to avoid blocking the request
+      // We sneaky DONT AWAIT here to avoid blocking the request
       processPresets(inputPath, (message) => {
         transcodingEvents.emit(jobId, message);
-      }).then(() => {
+      }).then(async () => {
+        transcodingEvents.emit(jobId, "Uploading to R2");
+        await orchestratorClient.orchestrator.job[":jobId"].$patch({
+          param: {
+            jobId,
+          },
+          json: { status: "uploading" },
+        });
         // do R2 upload here
+
+        await orchestratorClient.orchestrator.job[":jobId"].$patch({
+          param: {
+            jobId,
+          },
+          json: { status: "done" },
+        });
+
+        transcodingEvents.emit(jobId, COMPLETE_MESSAGE);
       });
 
       return c.json({
@@ -56,13 +79,48 @@ const agentApp = new Hono()
   .get("/progress/:jobId", async (c) => {
     const { jobId } = c.req.param();
     return streamSSE(c, async (stream) => {
+      const existingCompleteJobRes = await orchestratorClient.orchestrator.job[
+        ":jobId"
+      ].$get({
+        param: {
+          jobId,
+        },
+      });
+
+      const { job } = await existingCompleteJobRes.json();
+
+      if (job?.status === "done") {
+        // Catches the case where the job is completed before the client connects
+        stream.writeSSE({
+          data: "Job already completed",
+          event: "complete",
+          id: jobId,
+        });
+        await stream.close();
+        return;
+      }
+
+      let jobCompleted = false;
+
+      // Send initial connection message
       stream.writeSSE({
         data: "Connected to transcoding progress stream",
         event: "connected",
         id: jobId,
       });
 
-      const progressHandler = (message: string) => {
+      // Set up event listener for transcoding progress
+      const progressHandler = async (message: string) => {
+        if (message === COMPLETE_MESSAGE) {
+          stream.writeSSE({
+            data: message,
+            event: "complete",
+            id: jobId,
+          });
+          jobCompleted = true;
+          return;
+        }
+
         stream.writeSSE({
           data: message,
           event: "progress",
@@ -78,17 +136,16 @@ const agentApp = new Hono()
         transcodingEvents.off(jobId, progressHandler);
       });
 
-      // Keep stream alive
       try {
-        while (true) {
-          console.log("alove");
-
-          await stream.sleep(1000); // Sleep for 1 second
+        // Sleep for 1 second until the job is complete
+        while (!jobCompleted) {
+          await stream.sleep(1000);
         }
       } catch (error) {
         // Stream was closed/aborted
         console.log(`Stream closed for job ${jobId}`);
         transcodingEvents.off(jobId, progressHandler);
+        // clearInterval(heartbeatInterval);
       }
     });
   })

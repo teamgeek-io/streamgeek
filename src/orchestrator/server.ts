@@ -4,6 +4,7 @@ import { route } from "rwsdk/router";
 import { RequestInfo } from "rwsdk/worker";
 import { z } from "zod";
 import { db } from "../db";
+import { JobStatus } from "../../generated/prisma/enums";
 import { PrismaClientKnownRequestError } from "../../generated/prisma/internal/prismaNamespace";
 
 /**
@@ -69,20 +70,26 @@ const orchestratorApp = new Hono()
     }
   )
   // Jobs
-  .post(
-    "/job/create",
-    zValidator(
-      "json",
-      z.object({
-        videoId: z.string(),
-      })
-    ),
-    (c) => {
-      const { videoId } = c.req.valid("json");
-
-      return c.text(`Hello Orchestrator! ${videoId}`);
+  .patch(
+    "/job/:jobId",
+    zValidator("json", z.object({ status: z.enum(JobStatus) })),
+    async (c) => {
+      const { jobId } = c.req.param();
+      const { status } = c.req.valid("json");
+      const job = await db.job.update({
+        where: { id: jobId },
+        data: { status: status },
+      });
+      return c.json({ job });
     }
-  );
+  )
+  .get("/job/:jobId", async (c) => {
+    const { jobId } = c.req.param();
+    const job = await db.job.findUnique({
+      where: { id: jobId },
+    });
+    return c.json({ job });
+  });
 
 async function orchestratorHandler({ request, params, ctx }: RequestInfo) {
   // ToDo: do we need params/ctx out of redwood?

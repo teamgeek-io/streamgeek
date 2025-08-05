@@ -1,12 +1,15 @@
 import { useSSE } from "../../../shared/hooks/sse";
 import { useState, useEffect } from "react";
+import { link } from "../../../shared/links";
 
 export const TranscodeStatus = ({
   url,
   jobId,
+  videoId,
 }: {
   url: string;
   jobId: string;
+  videoId: string;
 }) => {
   const [progress, setProgress] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
@@ -21,6 +24,12 @@ export const TranscodeStatus = ({
 
     addListener("progress", (data) => {
       setProgress(data);
+    });
+
+    addListener("complete", (data) => {
+      alert("Upload complete!");
+      closeConnection();
+      window.location.href = link("/video/:id", { id: videoId });
     });
 
     addListener("heartbeat", (data) => {
