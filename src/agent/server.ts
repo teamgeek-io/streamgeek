@@ -56,14 +56,12 @@ const agentApp = new Hono()
   .get("/progress/:jobId", async (c) => {
     const { jobId } = c.req.param();
     return streamSSE(c, async (stream) => {
-      // Send initial connection message
       stream.writeSSE({
         data: "Connected to transcoding progress stream",
         event: "connected",
         id: jobId,
       });
 
-      // Set up event listener for transcoding progress
       const progressHandler = (message: string) => {
         stream.writeSSE({
           data: message,
@@ -74,32 +72,23 @@ const agentApp = new Hono()
 
       transcodingEvents.on(jobId, progressHandler);
 
-      // Send keep-alive heartbeat every 30 seconds
-      const heartbeatInterval = setInterval(() => {
-        stream.writeSSE({
-          data: "heartbeat",
-          event: "heartbeat",
-          id: jobId,
-        });
-      }, 30000);
-
       // Handle client disconnect
       stream.onAbort(() => {
         console.log(`Client disconnected from job ${jobId}`);
         transcodingEvents.off(jobId, progressHandler);
-        clearInterval(heartbeatInterval);
       });
 
-      // Keep stream alive using stream.sleep() in a loop
+      // Keep stream alive
       try {
         while (true) {
+          console.log("alove");
+
           await stream.sleep(1000); // Sleep for 1 second
         }
       } catch (error) {
         // Stream was closed/aborted
         console.log(`Stream closed for job ${jobId}`);
         transcodingEvents.off(jobId, progressHandler);
-        clearInterval(heartbeatInterval);
       }
     });
   })

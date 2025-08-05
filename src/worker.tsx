@@ -11,6 +11,7 @@ import { env } from "cloudflare:workers";
 import { AppLayout } from "./web/layout";
 import { uploadRoutes } from "./web/pages/upload/routes";
 import orchestratorApp from "./orchestrator/server";
+import { videoRoutes } from "./web/pages/video/routes";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {
@@ -65,6 +66,7 @@ export default defineApp([
       route("/", Home),
       prefix("/user", userRoutes),
       prefix("/upload", uploadRoutes),
+      prefix("/video", videoRoutes),
     ]),
   ]),
 ]);

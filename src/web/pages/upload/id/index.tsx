@@ -2,6 +2,7 @@ import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
 import { UploadEditor } from "./editor";
 import createAgentClient from "../../../../agent/client";
+import { link } from "../../../shared/links";
 
 export async function UploadEditorPage({ ctx, params }: RequestInfo) {
   const { id } = params;
@@ -18,7 +19,7 @@ export async function UploadEditorPage({ ctx, params }: RequestInfo) {
     where: {
       videoId: id,
       status: {
-        in: ["queued", "encoding"],
+        in: ["queued", "encoding", "done"],
       },
     },
     include: {
