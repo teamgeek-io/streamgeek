@@ -25,9 +25,13 @@
     "check": "npm run generate && npm run types",
     "types": "tsc",
     "prepare": "vibe-rules install cursor",
-    "agent:dev": "pnpx tsx watch --env-file=./src/agent/.env ./src/agent/index.ts"
+    "agent:dev": "pnpx tsx watch --env-file=./src/agent/.env ./src/agent/index.ts",
+    "minio:up": "docker compose -f docker-compose-minio.yml up -d",
+    "minio:down": "docker compose -f docker-compose-minio.yml down"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.859.0",
+    "@aws-sdk/lib-storage": "^3.859.0",
     "@hono/node-server": "^1.18.0",
     "@hono/zod-validator": "^0.7.2",
     "@prisma/adapter-d1": "~6.8.2",

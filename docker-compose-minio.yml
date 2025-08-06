@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  # Since we dont actually access R2 from cloudflare workers,
+  # we use a local minio server for development with the agent nodejs server.
+  minio:
+    image: minio/minio:latest
+    container_name: streamgeek-minio
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # MinIO Console
+    environment:
+      MINIO_ROOT_USER: streamgeek
+      MINIO_ROOT_PASSWORD: streamgeek
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./minio-data:/data

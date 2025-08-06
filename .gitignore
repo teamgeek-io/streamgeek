@@ -72,3 +72,5 @@ generated/
 agent_id.txt
 input/
 output/
+
+minio-data/
