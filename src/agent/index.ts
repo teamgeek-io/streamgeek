@@ -39,16 +39,21 @@ const startServer = async () => {
     await fs.writeFile("agent_id.txt", agent.id);
     console.log("Agent registered", agent);
   } else {
-    const res = await orchestratorClient.orchestrator.agent[":id"].$patch({
-      param: { id: agentId },
-      json: {
-        url: process.env.AGENT_URL!,
-      },
-    });
+    try {
+      const res = await orchestratorClient.orchestrator.agent[":id"].$patch({
+        param: { id: agentId },
+        json: {
+          url: process.env.AGENT_URL!,
+        },
+      });
 
-    if (res.ok) {
-      agent = (await res.json()).agent as unknown as Agent;
-      console.log("Agent synced", agent);
+      if (res.ok) {
+        agent = (await res.json()).agent as unknown as Agent;
+        console.log("Agent synced", agent);
+      }
+    } catch (e) {
+      console.error("Error syncing agent", e);
+      process.exit(1);
     }
   }
 

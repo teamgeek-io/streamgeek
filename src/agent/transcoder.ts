@@ -51,15 +51,14 @@ type TranscodeResult = {
 async function transcode(
   input: URL,
   preset: Preset,
-  orientation: VideoOrientation
+  orientation: VideoOrientation,
+  outputFolder: URL,
+  videoId: string
 ): Promise<TranscodeResult> {
   const input_extension = extname(input.pathname);
   const input_filename = decodeURI(basename(input.pathname, input_extension));
-  const output_folder = new URL(
-    `file://${process.cwd()}/output/${input_filename}`
-  );
-  const m3u8_path = `${output_folder}/${input_filename}_${preset.resolution}p.m3u8`;
-  console.log({ input_filename, output_folder });
+  const output_folder = new URL(`${outputFolder}/${videoId}`);
+  const m3u8_path = `${output_folder}/${preset.resolution}p.m3u8`;
   console.log(
     `transcoding ${input.pathname} to ${preset.resolution}p (${orientation})`
   );
@@ -95,7 +94,7 @@ async function transcode(
       "-hls_playlist_type",
       "vod",
       "-hls_segment_filename",
-      `${output_folder}/${input_filename}_${preset.resolution}_%03d.ts`,
+      `${output_folder}/${preset.resolution}_%03d.ts`,
     ])
     .output(m3u8_path)
     .on("start", (cmdline) => {
@@ -134,6 +133,8 @@ async function transcode(
 
 export async function processPresets(
   input: URL,
+  videoId: string,
+  outputFolder: URL,
   onChange?: (message: string) => void
 ) {
   console.time("process_presets");
@@ -165,12 +166,21 @@ export async function processPresets(
       })`
     );
     console.timeLog("process_presets", `transcoding ${preset.resolution}p`);
-    const transcode_result = await transcode(input, preset, orientation);
+    const transcode_result = await transcode(
+      input,
+      preset,
+      orientation,
+      outputFolder,
+      videoId
+    );
     console.log(transcode_result);
     results.push(transcode_result);
   }
   const playlist = await generatePlaylist(results);
   onChange?.("Transcoding complete");
-  await writeFile(`./output/${input_filename}/master.m3u8`, playlist);
+  await writeFile(
+    `${outputFolder.pathname}/${videoId}/playlist.m3u8`,
+    playlist
+  );
   console.timeEnd("process_presets");
 }

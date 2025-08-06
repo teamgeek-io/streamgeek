@@ -8,27 +8,27 @@ import { link } from "../../shared/links";
 export const uploadRoutes = [
   route("/", [CreateUpload]),
   route("/:id", [
-    async ({ params }) => {
-      const { id } = params;
+    // async ({ params }) => {
+    //   const { id } = params;
 
-      const existingJob = await db.job.findFirst({
-        where: {
-          videoId: id,
-          status: {
-            in: ["done"],
-          },
-        },
-      });
+    //   const existingJob = await db.job.findFirst({
+    //     where: {
+    //       videoId: id,
+    //       status: {
+    //         in: ["done"],
+    //       },
+    //     },
+    //   });
 
-      if (existingJob) {
-        return new Response(null, {
-          status: 302,
-          headers: {
-            Location: link("/video/:id", { id: existingJob.videoId }),
-          },
-        });
-      }
-    },
+    //   if (existingJob) {
+    //     return new Response(null, {
+    //       status: 302,
+    //       headers: {
+    //         Location: link("/video/:id", { id: existingJob.videoId }),
+    //       },
+    //     });
+    //   }
+    // },
     UploadEditorPage,
   ]),
 ];
