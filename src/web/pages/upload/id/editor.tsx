@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 
-import { RequestInfo } from "rwsdk/worker";
 import { createJob, startJob } from "../../../shared/functions";
 import { Agent, Job, Video } from "../../../../db";
 import { Uploader, UploadResult } from "./uploader";

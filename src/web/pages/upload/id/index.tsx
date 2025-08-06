@@ -11,6 +11,7 @@ export async function UploadEditorPage({ ctx, params }: RequestInfo) {
       id,
     },
   });
+
   if (!video) {
     return <div>Video not found</div>;
   }

@@ -30,8 +30,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "__change_me__",
-      "database_id": "__change_me__"
+      "database_name": "streamgeek-test",
+      "database_id": "09ba182a-0204-4c07-ae36-98701db5c361"
     }
   ]
 }
