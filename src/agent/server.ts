@@ -98,6 +98,16 @@ const agentApp = new Hono()
             recursive: true,
           });
 
+          await orchestratorClient.orchestrator.video[":videoId"].$patch({
+            param: {
+              videoId,
+            },
+            json: {
+              thumbnailUrl: `${process.env.S3_ENDPOINT}/${videoId}/thumbnail.jpg`,
+              playlistUrl: `${process.env.S3_ENDPOINT}/${videoId}/playlist.m3u8`,
+            },
+          });
+
           await orchestratorClient.orchestrator.job[":jobId"].$patch({
             param: {
               jobId,

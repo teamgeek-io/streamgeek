@@ -139,8 +139,6 @@ export async function processPresets(
 ) {
   console.time("process_presets");
   onChange?.("Starting transcoding");
-  const input_extension = extname(input.pathname);
-  const input_filename = decodeURI(basename(input.pathname, input_extension));
 
   const [input_width, input_height] = await getResolution(
     decodeURI(input.pathname)
