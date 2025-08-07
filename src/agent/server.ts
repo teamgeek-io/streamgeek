@@ -20,6 +20,7 @@ const tusServer = new Server({
 const transcodingEvents = new EventEmitter();
 
 const COMPLETE_MESSAGE = "complete";
+const FAILED_MESSAGE = "failed";
 
 const orchestratorClient = createOrchestratorClient(
   process.env.ORCHESTRATOR_URL!
@@ -68,21 +69,24 @@ const agentApp = new Hono()
       // We sneaky DONT AWAIT here to avoid blocking the request
       processPresets(inputPath, videoId, outputFolder, (message) => {
         transcodingEvents.emit(jobId, message);
-      }).then(async () => {
-        transcodingEvents.emit(jobId, "Uploading to R2");
+      })
+        .then(async () => {
+          transcodingEvents.emit(jobId, "Uploading to R2");
 
-        await orchestratorClient.orchestrator.job[":jobId"].$patch({
-          param: {
-            jobId,
-          },
-          json: { status: "uploading" },
-        });
+          await orchestratorClient.orchestrator.job[":jobId"].$patch({
+            param: {
+              jobId,
+            },
+            json: { status: "uploading" },
+          });
 
-        try {
           await uploadFolderToS3({
             localFolderPath: `${outputFolder.pathname}/${videoId}`,
             bucketName: process.env.S3_BUCKET!,
             s3Prefix: videoId,
+            onProgress: (message) => {
+              transcodingEvents.emit(jobId, message);
+            },
           });
 
           // Delete input file and input file metadata
@@ -93,25 +97,26 @@ const agentApp = new Hono()
           await fs.rm(`${outputFolder.pathname}`, {
             recursive: true,
           });
-        } catch (error) {
-          console.error("Error uploading to S3", error);
+
+          await orchestratorClient.orchestrator.job[":jobId"].$patch({
+            param: {
+              jobId,
+            },
+            json: { status: "done" },
+          });
+
+          transcodingEvents.emit(jobId, COMPLETE_MESSAGE);
+        })
+        .catch(async (error) => {
+          console.error("Error transcoding/uploading", error);
           await orchestratorClient.orchestrator.job[":jobId"].$patch({
             param: {
               jobId,
             },
             json: { status: "failed" },
           });
-        }
-
-        await orchestratorClient.orchestrator.job[":jobId"].$patch({
-          param: {
-            jobId,
-          },
-          json: { status: "done" },
+          transcodingEvents.emit(jobId, FAILED_MESSAGE);
         });
-
-        transcodingEvents.emit(jobId, COMPLETE_MESSAGE);
-      });
 
       return c.json({
         success: true,
@@ -142,7 +147,7 @@ const agentApp = new Hono()
         return;
       }
 
-      let jobCompleted = false;
+      let jobEnded = false;
 
       // Send initial connection message
       stream.writeSSE({
@@ -159,7 +164,17 @@ const agentApp = new Hono()
             event: "complete",
             id: jobId,
           });
-          jobCompleted = true;
+          jobEnded = true;
+          return;
+        }
+
+        if (message === FAILED_MESSAGE) {
+          stream.writeSSE({
+            data: message,
+            event: "failed",
+            id: jobId,
+          });
+          jobEnded = true;
           return;
         }
 
@@ -180,14 +195,13 @@ const agentApp = new Hono()
 
       try {
         // Sleep for 1 second until the job is complete
-        while (!jobCompleted) {
+        while (!jobEnded) {
           await stream.sleep(1000);
         }
       } catch (error) {
         // Stream was closed/aborted
         console.log(`Stream closed for job ${jobId}`);
         transcodingEvents.off(jobId, progressHandler);
-        // clearInterval(heartbeatInterval);
       }
     });
   })

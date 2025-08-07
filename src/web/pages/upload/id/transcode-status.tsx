@@ -26,6 +26,11 @@ export const TranscodeStatus = ({
       setProgress(data);
     });
 
+    addListener("failed", (data) => {
+      alert("Transcoding failed! Please try again.");
+      closeConnection();
+    });
+
     addListener("complete", (data) => {
       alert("Upload complete!");
       closeConnection();
