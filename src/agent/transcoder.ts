@@ -48,6 +48,71 @@ type TranscodeResult = {
   bitrate: number;
 };
 
+async function generateThumbnail(
+  input: URL,
+  outputFolder: URL,
+  videoId: string
+): Promise<void> {
+  const output_folder = new URL(`${outputFolder}/${videoId}`);
+  const thumbnail_path = `${output_folder}/thumbnail.jpeg`;
+
+  console.log(`Generating thumbnail: ${thumbnail_path}`);
+
+  const { promise, resolve, reject } = Promise.withResolvers<void>();
+
+  // Get source video dimensions
+  const [sourceWidth, sourceHeight] = await getResolution(
+    decodeURI(input.pathname)
+  );
+
+  // Calculate thumbnail dimensions while preserving aspect ratio and capping at 1080p
+  let width = sourceWidth;
+  let height = sourceHeight;
+
+  // Scale down if either dimension exceeds 1080p while maintaining aspect ratio
+  if (width > 1920 || height > 1080) {
+    const scaleX = 1920 / width;
+    const scaleY = 1080 / height;
+    const scale = Math.min(scaleX, scaleY);
+
+    width = Math.round(width * scale);
+    height = Math.round(height * scale);
+  }
+
+  console.log(
+    `Thumbnail dimensions: ${width}x${height} (source: ${sourceWidth}x${sourceHeight})`
+  );
+
+  ffmpeg(decodeURI(input.pathname))
+    .outputOptions([
+      "-vframes",
+      "1", // Extract only 1 frame
+      "-ss",
+      "00:00:01", // Seek to 1 second (avoid black frames at start)
+      "-filter:v",
+      `scale=${width}:${height}`, // Scale to calculated dimensions
+      "-q:v",
+      "2", // High quality JPEG
+    ])
+    .output(thumbnail_path)
+    .on("start", () => {
+      console.log("Thumbnail generation started");
+    })
+    .on("end", () => {
+      console.log("Thumbnail generation completed");
+      resolve();
+    })
+    .on("error", (err, stdout, stderr) => {
+      console.error("Thumbnail generation error");
+      console.error(err);
+      console.error(stderr);
+      reject(err);
+    })
+    .run();
+
+  return promise;
+}
+
 async function transcode(
   input: URL,
   preset: Preset,
@@ -174,11 +239,18 @@ export async function processPresets(
     console.log(transcode_result);
     results.push(transcode_result);
   }
+
   const playlist = await generatePlaylist(results);
   onChange?.("Transcoding complete");
   await writeFile(
     `${outputFolder.pathname}/${videoId}/playlist.m3u8`,
     playlist
   );
+
+  // Generate thumbnail after transcoding is complete
+  onChange?.("Generating thumbnail");
+  await generateThumbnail(input, outputFolder, videoId);
+  onChange?.("Thumbnail generation complete");
+
   console.timeEnd("process_presets");
 }

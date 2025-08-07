@@ -6,20 +6,28 @@ import { RequestInfo } from "rwsdk/worker";
 import { createVideo } from "../../shared/functions";
 import { link } from "../../shared/links";
 
-export function CreateUpload({ ctx }: RequestInfo) {
+export function CreateUpload({}: RequestInfo) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<Error | null>(null);
   const [title, setTitle] = useState("");
 
-  const handleCreateVideo = async () => {
-    const result = await createVideo(title);
-    if (result.success) {
-      // RedwoodSDK doesn't have a client router/support for redirects on form actions, so this works fine 🤓
-      // See https://github.com/redwoodjs/sdk/issues/472
-      window.location.href = link("/upload/:id", { id: result.video!.id });
-    } else {
-      setError(result.error);
-    }
+  const handleCreateVideo = () => {
+    setError(null); // Clear previous errors
+
+    startTransition(async () => {
+      try {
+        const result = await createVideo(title);
+        if (result.success) {
+          // RedwoodSDK doesn't have a client router/support for redirects on form actions, so this works fine 🤓
+          // See https://github.com/redwoodjs/sdk/issues/472
+          window.location.href = link("/upload/:id", { id: result.video!.id });
+        } else {
+          setError(result.error);
+        }
+      } catch (err) {
+        setError(err as Error);
+      }
+    });
   };
 
   // ToDo: need auth!
@@ -29,7 +37,7 @@ export function CreateUpload({ ctx }: RequestInfo) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          startTransition(() => handleCreateVideo());
+          handleCreateVideo();
         }}
       >
         <input
@@ -40,7 +48,9 @@ export function CreateUpload({ ctx }: RequestInfo) {
         />
 
         {error && <p>Error: {error.message}</p>}
-        <button disabled={isPending}>Create video</button>
+        <button disabled={isPending}>
+          {isPending ? "Creating..." : "Create video"}
+        </button>
       </form>
     </div>
   );
