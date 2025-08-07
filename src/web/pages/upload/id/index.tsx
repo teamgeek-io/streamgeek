@@ -1,9 +1,12 @@
 import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
-import { UploadEditor } from "./editor";
-import createAgentClient from "../../../../agent/client";
 
-export async function UploadEditorPage({ ctx, params }: RequestInfo) {
+import createAgentClient from "../../../../agent/client";
+import { UploadEditor } from "./editor";
+
+export async function UploadEditorPage({
+  params,
+}: Pick<RequestInfo, "params">) {
   const { id } = params;
   const video = await db.video.findUnique({
     where: {
@@ -41,5 +44,11 @@ export async function UploadEditorPage({ ctx, params }: RequestInfo) {
     }
   }
 
-  return <UploadEditor video={video} existingJob={existingJob} />;
+  return (
+    <UploadEditor
+      videoId={video.id}
+      videoTitle={video.title}
+      existingJob={existingJob}
+    />
+  );
 }

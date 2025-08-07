@@ -2,11 +2,10 @@
 
 import { useState, useTransition } from "react";
 
-import { RequestInfo } from "rwsdk/worker";
 import { createVideo } from "../../shared/functions";
 import { link } from "../../shared/links";
 
-export function CreateUpload({}: RequestInfo) {
+export function CreateUpload() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<Error | null>(null);
   const [title, setTitle] = useState("");

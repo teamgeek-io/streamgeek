@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   server: {
     watch: {
-      ignored: ["**/output/**"],
+      ignored: ["**/output/**", "minio-data/**"],
     },
   },
 });

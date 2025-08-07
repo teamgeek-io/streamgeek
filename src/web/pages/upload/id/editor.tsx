@@ -1,28 +1,29 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { createJob, startJob } from "../../../shared/functions";
 import { Agent, Job, Video } from "../../../../db";
 import { Uploader, UploadResult } from "./uploader";
 import { TranscodeStatus } from "./transcode-status";
-import { link } from "../../../shared/links";
 
 export function UploadEditor({
-  video,
+  videoId,
+  videoTitle,
   existingJob,
 }: {
-  video: Video;
+  videoId: string;
+  videoTitle: string;
   existingJob: (Job & { agent: Agent }) | null;
 }) {
-  useEffect(() => {
-    if (existingJob?.status === "done" && typeof window !== "undefined") {
-      // We do this here because redirecting in the route handler seems to cause redwood dev server to break :(
-      window.location.href = link("/video/:id", { id: video.id });
-    }
-  }, [existingJob]);
+  console.log("existingJob", existingJob);
+  // useEffect(() => {
+  //   if (existingJob?.status === "done" && typeof window !== "undefined") {
+  //     // We do this here because redirecting in the route handler seems to cause redwood dev server to break :(
+  //     window.location.href = link("/video/:id", { id: video.id });
+  //   }
+  // }, [existingJob]);
 
-  console.log("video", video);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
@@ -30,7 +31,7 @@ export function UploadEditor({
 
   const handleCreateJob = async () => {
     setError(null);
-    const result = await createJob(video.id);
+    const result = await createJob(videoId);
 
     if (result.success) {
       setJob(result.job);
@@ -52,7 +53,7 @@ export function UploadEditor({
   // ToDo: need auth!
   return (
     <div>
-      <h1>My video: {video.title}</h1>
+      <h1>My video: {videoTitle}</h1>
 
       {error && <p>Error: {error}</p>}
       {job ? (
@@ -63,7 +64,7 @@ export function UploadEditor({
               <TranscodeStatus
                 url={job.agent.url}
                 jobId={job.id}
-                videoId={video.id}
+                videoId={videoId}
               />
             </>
           ) : (

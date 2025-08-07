@@ -1,3 +1,5 @@
+"use client";
+
 import { useSSE } from "../../../shared/hooks/sse";
 import { useState, useEffect } from "react";
 import { link } from "../../../shared/links";
