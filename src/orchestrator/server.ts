@@ -13,8 +13,6 @@ import { PrismaClientKnownRequestError } from "../../generated/prisma/internal/p
  *
  * We use hono here since it's got a nice api that's based on web standards
  * so its easy to convert to RedwoodSDK routes.
- *
- * @todo we should have a separate agent app for this, but easy enough to keep it in the same place.
  */
 const orchestratorApp = new Hono()
   .basePath("/orchestrator")
@@ -57,7 +55,7 @@ const orchestratorApp = new Hono()
           },
         });
 
-        return c.json({ message: "Agent updated", agent, success: true });
+        return c.json({ message: "Agent updated", agent });
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
           return c.json(
@@ -89,7 +87,27 @@ const orchestratorApp = new Hono()
       where: { id: jobId },
     });
     return c.json({ job });
-  });
+  })
+  // Videos
+  .patch(
+    "/video/:videoId",
+    zValidator(
+      "json",
+      z.object({
+        thumbnailUrl: z.string().optional(),
+        playlistUrl: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { videoId } = c.req.param();
+      const { thumbnailUrl, playlistUrl } = c.req.valid("json");
+      const video = await db.video.update({
+        where: { id: videoId },
+        data: { thumbnailUrl, playlistUrl },
+      });
+      return c.json({ video });
+    }
+  );
 
 async function orchestratorHandler({ request, params, ctx }: RequestInfo) {
   // ToDo: do we need params/ctx out of redwood?
