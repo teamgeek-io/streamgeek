@@ -15,6 +15,15 @@ import { uploadFolderToS3 } from "./s3";
 const tusServer = new Server({
   path: "/upload",
   datastore: new FileStore({ directory: "./input" }),
+  allowedHeaders: [
+    "authorization",
+    "content-type",
+    "x-requested-with",
+    "x-forwarded-for",
+    "x-forwarded-proto",
+  ],
+  relativeLocation: true,
+  respectForwardedHeaders: true,
 });
 
 const transcodingEvents = new EventEmitter();
@@ -28,6 +37,7 @@ const orchestratorClient = createOrchestratorClient(
 
 const agentApp = new Hono()
   .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! })) // TODO: restrict to only the web app
+
   .get("/", (c) => {
     return c.text("Hello Agent!");
   })

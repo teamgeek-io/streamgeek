@@ -48,7 +48,14 @@ function createUppy(
       maxNumberOfFiles: 1,
       maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB default
     },
-  }).use(Tus, { endpoint });
+    debug: true,
+    logger: console,
+  }).use(Tus, {
+    // Was having weird issue with this lib downgrading http on https,
+    // somehow adding a trailing slash fixed it
+    endpoint: `${endpoint}/`,
+    headers: { "x-forwarded-proto": "https" },
+  });
 
   uppy.on("complete", (result) => {
     const successful = Boolean(
@@ -89,6 +96,7 @@ export function Uploader({
       if (uppy.getFiles().length > 0) {
         setFileAdded(true);
         onUploadStart?.();
+        console.log(uppy.getState());
         uppy.upload();
       }
     };
