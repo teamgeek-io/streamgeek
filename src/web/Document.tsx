@@ -1,3 +1,5 @@
+import styles from "./styles.css?url";
+
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
@@ -11,6 +13,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
         content="Run your own video streaming app on the cheap! 🚀🤓"
       />
       <link rel="modulepreload" href="/src/client.tsx" />
+      <link rel="stylesheet" href={styles} />
     </head>
     <body>
       <div id="root">{children}</div>
