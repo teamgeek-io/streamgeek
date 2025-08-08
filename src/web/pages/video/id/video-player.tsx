@@ -17,12 +17,17 @@ import {
   MediaVolumeRange,
 } from "media-chrome/react";
 
-export const VideoPlayer = ({ video }: { video: Video }) => {
+export const VideoPlayer = ({
+  video,
+  className,
+}: {
+  video: Video;
+  className?: string;
+}) => {
   return (
-    <MediaController>
+    <MediaController className={className}>
       <HlsVideoElement
         src={video.playlistUrl!}
-        // className="absolute top-0 right-0 left-0"
         slot="media"
         preload="auto"
         suppressHydrationWarning

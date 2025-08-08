@@ -18,7 +18,9 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
     <div>
       {" "}
       {video.title}
-      {video.playlistUrl && <VideoPlayer video={video} />}
+      {video.playlistUrl && (
+        <VideoPlayer video={video} className="w-full h-[80dvh]" />
+      )}
     </div>
   );
 }
