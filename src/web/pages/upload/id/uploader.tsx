@@ -29,6 +29,7 @@ interface UploaderProps {
   onUploadComplete?: (result: UploadResult) => void;
   maxFileSize?: number;
   allowedFileTypes?: string[];
+  onUploadStart?: () => void;
 }
 
 interface ProgressDetails {
@@ -73,7 +74,11 @@ function createUppy(
   return uppy;
 }
 
-export function Uploader({ endpoint, onUploadComplete }: UploaderProps) {
+export function Uploader({
+  endpoint,
+  onUploadComplete,
+  onUploadStart,
+}: UploaderProps) {
   const [uppy] = useState(() => createUppy(endpoint, onUploadComplete));
   const [fileAdded, setFileAdded] = useState(false);
   const [progressDetails, setProgressDetails] =
@@ -83,6 +88,7 @@ export function Uploader({ endpoint, onUploadComplete }: UploaderProps) {
     const handleFileAdded = () => {
       if (uppy.getFiles().length > 0) {
         setFileAdded(true);
+        onUploadStart?.();
         uppy.upload();
       }
     };
@@ -161,6 +167,7 @@ export function Uploader({ endpoint, onUploadComplete }: UploaderProps) {
               <strong>File:</strong> {progressDetails.fileName}
             </div>
             <div>
+              Keep this tab open!
               <strong>Progress:</strong> {progressDetails.uploadedMB} /{" "}
               {progressDetails.totalMB} MB (
               {progressDetails.percentage.toFixed(1)}%)

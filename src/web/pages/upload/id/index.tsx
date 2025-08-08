@@ -3,6 +3,8 @@ import { db } from "../../../../db";
 
 import createAgentClient from "../../../../agent/client";
 import { UploadEditor } from "./editor";
+import { getAgent } from "../../../utils/agent";
+import { Suspense } from "react";
 
 export async function UploadEditorPage({
   params,
@@ -18,11 +20,11 @@ export async function UploadEditorPage({
     return <div>Video not found</div>;
   }
 
-  let existingJob = await db.job.findFirst({
+  let job = await db.job.findFirst({
     where: {
       videoId: id,
       status: {
-        in: ["queued", "encoding", "done"],
+        in: ["queued", "encoding"],
       },
     },
     include: {
@@ -30,25 +32,57 @@ export async function UploadEditorPage({
     },
   });
 
-  if (existingJob) {
-    const agentClient = createAgentClient(existingJob.agent.url);
+  if (job) {
+    const agentClient = createAgentClient(job.agent.url);
     try {
       await agentClient.ping.$get();
     } catch (error) {
       console.error("Agent not responding", error);
       await db.job.update({
-        where: { id: existingJob.id },
+        where: { id: job.id },
         data: { status: "failed" },
       });
-      existingJob = null;
+      job = null;
     }
+  } else {
+    const agent = await getAgent();
+
+    if (!agent) {
+      return (
+        <div>
+          No agent available, make sure at least one agent is running and is
+          pointed to this app
+        </div>
+      );
+    }
+
+    // kill any existing jobs for this video
+    await db.job.updateMany({
+      where: {
+        videoId: id,
+      },
+      data: {
+        status: "failed",
+      },
+    });
+
+    const newJob = await db.job.create({
+      data: {
+        agentId: agent.id,
+        videoId: id,
+        status: "queued",
+      },
+      include: {
+        agent: true,
+      },
+    });
+
+    job = newJob;
   }
 
   return (
-    <UploadEditor
-      videoId={video.id}
-      videoTitle={video.title}
-      existingJob={existingJob}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <UploadEditor videoId={video.id} videoTitle={video.title} job={job} />
+    </Suspense>
   );
 }

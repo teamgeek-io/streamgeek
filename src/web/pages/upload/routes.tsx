@@ -10,7 +10,7 @@ export const uploadRoutes = [
   route("/:id", async ({ params }) => {
     const { id } = params;
 
-    const existingJob = await db.job.findFirst({
+    const doneJob = await db.job.findFirst({
       where: {
         videoId: id,
         status: {
@@ -19,14 +19,16 @@ export const uploadRoutes = [
       },
     });
 
-    if (existingJob) {
+    // Redirect early if there's already a video that's uploaded
+    if (doneJob) {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: link("/video/:id", { id: existingJob.videoId }),
+          Location: link("/video/:id", { id: doneJob.videoId }),
         },
       });
     }
+
     return <UploadEditorPage params={params} />;
   }),
 ];

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { createJob, startJob } from "../../../shared/functions";
+import { startJob } from "../../../shared/functions";
 import { Agent, Job, Video } from "../../../../db";
 import { Uploader, UploadResult } from "./uploader";
 import { TranscodeStatus } from "./transcode-status";
@@ -10,44 +10,27 @@ import { TranscodeStatus } from "./transcode-status";
 export function UploadEditor({
   videoId,
   videoTitle,
-  existingJob,
+  job,
 }: {
   videoId: string;
   videoTitle: string;
-  existingJob: (Job & { agent: Agent }) | null;
+  job: (Job & { agent: Agent }) | null;
 }) {
-  console.log("existingJob", existingJob);
-  // useEffect(() => {
-  //   if (existingJob?.status === "done" && typeof window !== "undefined") {
-  //     // We do this here because redirecting in the route handler seems to cause redwood dev server to break :(
-  //     window.location.href = link("/video/:id", { id: video.id });
-  //   }
-  // }, [existingJob]);
-
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
-  const [job, setJob] = useState(existingJob);
-
-  const handleCreateJob = async () => {
-    setError(null);
-    const result = await createJob(videoId);
-
-    if (result.success) {
-      setJob(result.job);
-    } else {
-      setError(result.error as string);
-      setJob(null);
-    }
-  };
 
   const handleUploadComplete = async (result: UploadResult) => {
     setUploadResult(result);
 
-    await startJob({
+    const startJobActionRes = await startJob({
       jobId: job!.id,
       sourceFileId: result.uploadUrl!.split("/").pop()!,
     });
+
+    if (!startJobActionRes.success) {
+      setError(startJobActionRes.error?.message || "Unknown error");
+    }
   };
 
   // ToDo: need auth!
@@ -60,7 +43,10 @@ export function UploadEditor({
         <div>
           {uploadResult || job.status === "encoding" ? (
             <>
-              <p>Upload complete, encoding in progress...</p>
+              <p>
+                Upload complete, you can now close this tab. Encoding in
+                progress...
+              </p>
               <TranscodeStatus
                 url={job.agent.url}
                 jobId={job.id}
@@ -78,17 +64,15 @@ export function UploadEditor({
                 onUploadComplete={(result) =>
                   startTransition(() => handleUploadComplete(result))
                 }
+                onUploadStart={() => {
+                  // ToDo: add a "transferring" state since we use "uploading" state for when agent uploads to R2
+                }}
               />
             </>
           )}
         </div>
       ) : (
-        <button
-          onClick={() => startTransition(() => handleCreateJob())}
-          disabled={isPending}
-        >
-          Start a job
-        </button>
+        <div>Cant create a job</div>
       )}
     </div>
   );
