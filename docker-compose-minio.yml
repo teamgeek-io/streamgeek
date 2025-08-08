@@ -11,6 +11,19 @@ services:
     environment:
       MINIO_ROOT_USER: streamgeek
       MINIO_ROOT_PASSWORD: streamgeek
-    command: server /data --console-address ":9001" && sleep 10 && mc alias set myminio http://localhost:9000 streamgeek streamgeek && mc mb myminio/streamgeek --ignore-existing && wait
+    command: server /data --console-address ":9001"
     volumes:
       - ./minio-data:/data
+
+  minio-setup:
+    image: bitnami/minio-client:latest
+    depends_on:
+      - minio
+    environment:
+      MC_HOST_myminio: http://streamgeek:streamgeek@minio:9000
+      BUCKET: streamgeek
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      [
+        "until mc ls myminio >/dev/null 2>&1; do echo Waiting for MinIO...; sleep 2; done; mc mb myminio/$${BUCKET} --ignore-existing && mc anonymous set download myminio/$${BUCKET} && echo MinIO bucket public-read configured.",
+      ]

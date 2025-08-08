@@ -1,5 +1,6 @@
 import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
+import { VideoPlayer } from "./video-player";
 
 export async function VideoPage({ ctx, params }: RequestInfo) {
   const { id } = params;
@@ -13,5 +14,11 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
     return <div>Video not found</div>;
   }
 
-  return <div> {video.title}</div>;
+  return (
+    <div>
+      {" "}
+      {video.title}
+      {video.playlistUrl && <VideoPlayer video={video} />}
+    </div>
+  );
 }
