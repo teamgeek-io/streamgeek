@@ -56,7 +56,7 @@ export const TranscodeStatus = ({
       <p>Connection State: {connectionState}</p>
       {isConnected && <p>✅ Connected to transcoding stream</p>}
       {connectionError && <p>❌ Error: {connectionError.type}</p>}
-      {progress && <p>Progress: {progress}</p>}
+      {progress ? <p>Progress: {progress}</p> : <p>Waiting for progress...</p>}
     </div>
   );
 };
