@@ -44,6 +44,7 @@
     "@uppy/progress-bar": "^4.3.2",
     "@uppy/react": "^4.5.1",
     "@uppy/tus": "^4.3.1",
+    "hls-video-element": "^1.5.6",
     "hono": "^4.8.10",
     "ky": "^1.8.2",
     "nanoid": "^5.1.5",
