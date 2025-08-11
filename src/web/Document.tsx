@@ -14,6 +14,12 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       />
       <link rel="modulepreload" href="/src/client.tsx" />
       <link rel="stylesheet" href={styles} />
+      {/* including this within the head to prevent FOUC */}
+      <script type="text/javascript">
+        document.documentElement.classList.toggle( "dark", localStorage.theme
+        === "dark" || (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches), );
+      </script>
     </head>
     <body>
       <div id="root">{children}</div>
