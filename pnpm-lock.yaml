@@ -53,6 +53,12 @@ importers:
       '@uppy/tus':
         specifier: ^4.3.1
         version: 4.3.1(@uppy/core@4.5.2)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       hls-video-element:
         specifier: ^1.5.6
         version: 1.5.6
@@ -62,6 +68,9 @@ importers:
       ky:
         specifier: ^1.8.2
         version: 1.8.2
+      lucide-react:
+        specifier: ^0.539.0
+        version: 0.539.0(react@19.2.0-canary-39cad7af-20250411)
       media-chrome:
         specifier: ^4.12.0
         version: 4.12.0(react@19.2.0-canary-39cad7af-20250411)
@@ -71,6 +80,9 @@ importers:
       rwsdk:
         specifier: 0.2.0-alpha.7
         version: 0.2.0-alpha.7(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250803.0)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -108,6 +120,9 @@ importers:
       prisma:
         specifier: ~6.8.2
         version: 6.8.2(typescript@5.8.3)
+      tw-animate-css:
+        specifier: ^1.3.6
+        version: 1.3.6
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -2017,6 +2032,9 @@ packages:
     peerDependencies:
       devtools-protocol: '*'
 
+  class-variance-authority@0.7.1:
+    resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
+
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
 
@@ -2607,6 +2625,11 @@ packages:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
 
+  lucide-react@0.539.0:
+    resolution: {integrity: sha512-VVISr+VF2krO91FeuCrm1rSOLACQUYVy7NQkzrOty52Y8TlTPcXcMdQFj9bYzBgXbWCiywlwSZ3Z8u6a+6bMlg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -3062,6 +3085,9 @@ packages:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
 
+  tailwind-merge@3.3.1:
+    resolution: {integrity: sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==}
+
   tailwindcss@4.1.11:
     resolution: {integrity: sha512-2E9TBm6MDD/xKYe+dvJZAmg3yxIEDNRc0jwlNyDg/4Fil2QcSLjFKGVff0lAf1jjeaArlG/M75Ey/EYr/OJtBA==}
 
@@ -3140,6 +3166,9 @@ packages:
   tus-js-client@4.3.1:
     resolution: {integrity: sha512-ZLeYmjrkaU1fUsKbIi8JML52uAocjEZtBx4DKjRrqzrZa0O4MYwT6db+oqePlspV+FxXJAyFBc/L5gwUi2OFsg==}
     engines: {node: '>=18'}
+
+  tw-animate-css@1.3.6:
+    resolution: {integrity: sha512-9dy0R9UsYEGmgf26L8UcHiLmSFTHa9+D7+dAt/G/sF5dCnPePZbfgDYinc7/UzAM7g/baVrmS6m9yEpU46d+LA==}
 
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
@@ -5643,6 +5672,10 @@ snapshots:
       urlpattern-polyfill: 10.0.0
       zod: 3.23.8
 
+  class-variance-authority@0.7.1:
+    dependencies:
+      clsx: 2.1.1
+
   classnames@2.5.1: {}
 
   cliui@8.0.1:
@@ -6202,6 +6235,10 @@ snapshots:
 
   lru-cache@7.18.3: {}
 
+  lucide-react@0.539.0(react@19.2.0-canary-39cad7af-20250411):
+    dependencies:
+      react: 19.2.0-canary-39cad7af-20250411
+
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.4
@@ -6739,6 +6776,8 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
+  tailwind-merge@3.3.1: {}
+
   tailwindcss@4.1.11: {}
 
   tapable@2.2.2: {}
@@ -6825,6 +6864,8 @@ snapshots:
       lodash.throttle: 4.1.1
       proper-lockfile: 4.1.2
       url-parse: 1.5.10
+
+  tw-animate-css@1.3.6: {}
 
   typescript@5.8.3: {}
 

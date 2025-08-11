@@ -3,7 +3,7 @@ import { db } from "../../../../db";
 
 import createAgentClient from "../../../../agent/client";
 import { UploadEditor } from "./editor";
-import { getAgent } from "../../../utils/agent";
+import { getAgent } from "../../../lib/utils/agent";
 import { Suspense } from "react";
 
 export async function UploadEditorPage({
@@ -80,9 +80,5 @@ export async function UploadEditorPage({
     job = newJob;
   }
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UploadEditor videoId={video.id} videoTitle={video.title} job={job} />
-    </Suspense>
-  );
+  return <UploadEditor videoId={video.id} videoTitle={video.title} job={job} />;
 }
