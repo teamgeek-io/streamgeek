@@ -49,7 +49,6 @@ function createUppy(
       maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB default
     },
     debug: true,
-    logger: console,
   }).use(Tus, {
     // Was having weird issue with this lib downgrading http on https,
     // somehow adding a trailing slash fixed it
