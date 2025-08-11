@@ -2,7 +2,7 @@
 
 import { requestInfo } from "rwsdk/worker";
 import { db } from "../../db";
-import { generateId } from "../lib/utils/id";
+import { generateId } from "../lib/id";
 import createAgentClient from "../../agent/client";
 
 /**

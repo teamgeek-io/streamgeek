@@ -1,6 +1,6 @@
-import { Agent } from "../../../../generated/prisma";
-import createAgentClient from "../../../agent/client";
-import { db } from "../../../db";
+import { Agent } from "../../../generated/prisma";
+import createAgentClient from "../../agent/client";
+import { db } from "../../db";
 
 /**
  * @returns Agent that is available to take a job

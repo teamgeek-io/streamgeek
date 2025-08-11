@@ -1,6 +1,6 @@
 import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
-import { VideoPlayer } from "./video-player";
+import { VideoPlayer } from "../../../components/player";
 
 export async function VideoPage({ ctx, params }: RequestInfo) {
   const { id } = params;
@@ -16,10 +16,9 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
 
   return (
     <div>
-      {" "}
       {video.title}
       {video.playlistUrl && (
-        <VideoPlayer video={video} className="w-full h-[80dvh]" />
+        <VideoPlayer video={video} className="aspect-16/9" />
       )}
     </div>
   );

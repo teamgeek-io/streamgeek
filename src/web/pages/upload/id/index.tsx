@@ -3,8 +3,7 @@ import { db } from "../../../../db";
 
 import createAgentClient from "../../../../agent/client";
 import { UploadEditor } from "./editor";
-import { getAgent } from "../../../lib/utils/agent";
-import { Suspense } from "react";
+import { getAgent } from "../../../lib/agent";
 
 export async function UploadEditorPage({
   params,
