@@ -304,7 +304,8 @@ function MediaPlayerRootImpl(props: MediaPlayerRootProps) {
   const isVideo =
     (typeof HTMLVideoElement !== "undefined" &&
       mediaRef.current instanceof HTMLVideoElement) ||
-    mediaRef.current?.tagName?.toLowerCase() === "mux-player";
+    mediaRef.current?.tagName?.toLowerCase() === "mux-player" ||
+    mediaRef.current?.tagName?.toLowerCase() === "hls-video";
 
   const onControlsShow = React.useCallback(() => {
     store.setState("controlsVisible", true);
@@ -3015,41 +3016,6 @@ function MediaPlayerSettings(props: MediaPlayerSettingsProps) {
         )}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
-            <span className="flex-1">Quality</span>
-            <Badge variant="outline" className="rounded-sm">
-              {selectedQualityLabel}
-            </Badge>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem
-              className="justify-between"
-              onSelect={() => onRenditionChange("auto")}
-            >
-              Auto
-              {!selectedQualityId && <CheckIcon />}
-            </DropdownMenuItem>
-            {mediaRenditionList.map((rendition) => {
-              const isSelected = rendition.id === selectedRenditionId;
-              return (
-                <DropdownMenuItem
-                  key={`${rendition.id}-${rendition.label}-${rendition.language}`}
-                  className="justify-between"
-                  onSelect={() => onRenditionChange(rendition.id ?? "")}
-                >
-                  {rendition.id}
-                  {isSelected && <CheckIcon />}
-                </DropdownMenuItem>
-              );
-            })}
-            {mediaRenditionList.length === 0 && (
-              <DropdownMenuItem disabled>
-                No quality options available
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
             <span className="flex-1">Captions</span>
             <Badge variant="outline" className="rounded-sm">
               {selectedSubtitleLabel}
@@ -3085,7 +3051,7 @@ function MediaPlayerSettings(props: MediaPlayerSettingsProps) {
               </DropdownMenuItem>
             )}
           </DropdownMenuSubContent>
-        </DropdownMenuSub> */}
+        </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );
