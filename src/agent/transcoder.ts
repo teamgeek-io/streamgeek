@@ -58,6 +58,8 @@ async function generateThumbnail(
 
   console.log(`Generating thumbnail: ${thumbnail_path}`);
 
+  await mkdir(output_folder, { recursive: true });
+
   const { promise, resolve, reject } = Promise.withResolvers<void>();
 
   // Get source video dimensions
@@ -205,6 +207,9 @@ export async function processPresets(
   console.time("process_presets");
   onChange?.("Starting transcoding");
 
+  // Ensure the base output directory exists
+  await mkdir(outputFolder.pathname, { recursive: true });
+
   const [input_width, input_height] = await getResolution(
     decodeURI(input.pathname)
   );
@@ -242,10 +247,12 @@ export async function processPresets(
 
   const playlist = await generatePlaylist(results);
   onChange?.("Transcoding complete");
-  await writeFile(
-    `${outputFolder.pathname}/${videoId}/playlist.m3u8`,
-    playlist
-  );
+
+  // Ensure the video-specific output directory exists before writing playlist
+  const videoOutputDir = `${outputFolder.pathname}/${videoId}`;
+  await mkdir(videoOutputDir, { recursive: true });
+
+  await writeFile(`${videoOutputDir}/playlist.m3u8`, playlist);
 
   // Generate thumbnail after transcoding is complete
   onChange?.("Generating thumbnail");
