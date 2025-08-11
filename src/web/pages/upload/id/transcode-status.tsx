@@ -13,8 +13,17 @@ export const TranscodeStatus = ({
   jobId: string;
   videoId: string;
 }) => {
-  const [progress, setProgress] = useState<string>("");
+  const lsKey = `transcode-progress-${jobId}`;
+  const [progress, setProgress] = useState<string>(
+    typeof window !== "undefined"
+      ? window.localStorage.getItem(lsKey) ?? ""
+      : ""
+  );
   const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    localStorage?.setItem(lsKey, progress);
+  }, [progress]);
 
   const { connectionState, connectionError, addListener, closeConnection } =
     useSSE(`${url}/progress/${jobId}`, {});
@@ -31,11 +40,13 @@ export const TranscodeStatus = ({
     addListener("failed", (data) => {
       alert("Transcoding failed! Please try again.");
       closeConnection();
+      window?.localStorage.removeItem(lsKey);
     });
 
     addListener("complete", (data) => {
       alert("Upload complete!");
       closeConnection();
+      window?.localStorage.removeItem(lsKey);
       window.location.href = link("/video/:id", { id: videoId });
     });
 
