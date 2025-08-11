@@ -46,10 +46,10 @@ export const VideoPlayer = ({
       <MediaPlayerVideo asChild>
         <HlsVideoElement
           src={video.playlistUrl!}
-          // slot="media"
           preload="auto"
           suppressHydrationWarning
           ref={hlsRef}
+          className="my-auto"
         />
       </MediaPlayerVideo>
       <MediaPlayerLoading />
