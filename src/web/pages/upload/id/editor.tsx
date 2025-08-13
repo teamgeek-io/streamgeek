@@ -11,10 +11,12 @@ export function UploadEditor({
   videoId,
   videoTitle,
   job,
+  token,
 }: {
   videoId: string;
   videoTitle: string;
   job: (Job & { agent: Agent }) | null;
+  token?: string;
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +46,7 @@ export function UploadEditor({
       <h1>My video: {videoTitle}</h1>
 
       {error && <p>Error: {error}</p>}
+
       {job ? (
         <div>
           {uploadResult || job.status === "encoding" ? (
@@ -52,11 +55,14 @@ export function UploadEditor({
                 Upload complete, you can now close this tab. Encoding in
                 progress...
               </p>
-              <TranscodeStatus
-                url={job.agent.url}
-                jobId={job.id}
-                videoId={videoId}
-              />
+              {token && (
+                <TranscodeStatus
+                  url={job.agent.url}
+                  jobId={job.id}
+                  videoId={videoId}
+                  token={token}
+                />
+              )}
             </>
           ) : (
             <>
@@ -64,15 +70,24 @@ export function UploadEditor({
                 Job:
                 {job.id} on {job.agentId}
               </p>
-              <Uploader
-                endpoint={`${job.agent.url}/upload`}
-                onUploadComplete={(result) =>
-                  startTransition(() => handleUploadComplete(result))
-                }
-                onUploadStart={() => {
-                  // ToDo: add a "transferring" state since we use "uploading" state for when agent uploads to R2
-                }}
-              />
+
+              {token ? (
+                <Uploader
+                  endpoint={`${job.agent.url}/upload`}
+                  onUploadComplete={(result) =>
+                    startTransition(() => handleUploadComplete(result))
+                  }
+                  token={token}
+                  onUploadStart={() => {
+                    // ToDo: add a "transferring" state since we use "uploading" state for when agent uploads to R2
+                  }}
+                />
+              ) : (
+                <div>
+                  Failed to generate upload token. Please refresh the page and
+                  try again.
+                </div>
+              )}
             </>
           )}
         </div>

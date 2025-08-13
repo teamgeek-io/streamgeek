@@ -26,6 +26,7 @@ export interface UploadResult {
 
 interface UploaderProps {
   endpoint: string;
+  token: string;
   onUploadComplete?: (result: UploadResult) => void;
   maxFileSize?: number;
   allowedFileTypes?: string[];
@@ -41,6 +42,7 @@ interface ProgressDetails {
 
 function createUppy(
   endpoint: string,
+  token: string,
   onComplete?: (result: UploadResult) => void
 ) {
   const uppy = new Uppy({
@@ -53,7 +55,10 @@ function createUppy(
     // Was having weird issue with this lib downgrading http on https,
     // somehow adding a trailing slash fixed it
     endpoint: `${endpoint}/`,
-    headers: { "x-forwarded-proto": "https" },
+    headers: {
+      "x-forwarded-proto": "https",
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   uppy.on("complete", (result) => {
@@ -82,10 +87,11 @@ function createUppy(
 
 export function Uploader({
   endpoint,
+  token,
   onUploadComplete,
   onUploadStart,
 }: UploaderProps) {
-  const [uppy] = useState(() => createUppy(endpoint, onUploadComplete));
+  const [uppy] = useState(() => createUppy(endpoint, token, onUploadComplete));
   const [fileAdded, setFileAdded] = useState(false);
   const [progressDetails, setProgressDetails] =
     useState<ProgressDetails | null>(null);

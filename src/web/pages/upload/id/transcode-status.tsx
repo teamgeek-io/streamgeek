@@ -6,10 +6,12 @@ import { link } from "../../../shared/links";
 
 export const TranscodeStatus = ({
   url,
+  token,
   jobId,
   videoId,
 }: {
   url: string;
+  token: string;
   jobId: string;
   videoId: string;
 }) => {
@@ -25,8 +27,12 @@ export const TranscodeStatus = ({
     localStorage?.setItem(lsKey, progress);
   }, [progress]);
 
-  const { connectionState, connectionError, addListener, closeConnection } =
-    useSSE(`${url}/progress/${jobId}`, {});
+  const { connectionState, connectionError, closeConnection, addListener } =
+    useSSE(`${url}/progress/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
   useEffect(() => {
     addListener("connected", (data) => {

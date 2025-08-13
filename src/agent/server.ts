@@ -12,6 +12,8 @@ import { EventEmitter } from "events";
 import { uploadFolderToS3 } from "./s3";
 import { apiKeyAuth } from "@/shared/apiAuth";
 import { orchestratorClient } from "./orchestratorClient";
+import { generateUploadToken } from "./tokenUtils";
+import { uploadTokenAuth } from "./uploadAuth";
 
 const tusServer = new Server({
   path: "/upload",
@@ -33,8 +35,102 @@ const COMPLETE_MESSAGE = "complete";
 const FAILED_MESSAGE = "failed";
 
 const agentApp = new Hono()
-  .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! })) // TODO: restrict to only the web app
-  .use("*", (c, next) => apiKeyAuth(c, next, process.env.API_KEY!))
+  .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! }))
+  .all("/upload*", uploadTokenAuth, async (c) => {
+    return tusServer.handleWeb(c.req.raw);
+  })
+  .get("/progress/:jobId", uploadTokenAuth, async (c) => {
+    const { jobId } = c.req.param();
+    return streamSSE(c, async (stream) => {
+      const existingCompleteJobRes = await orchestratorClient.orchestrator.job[
+        ":jobId"
+      ].$get({
+        param: {
+          jobId,
+        },
+      });
+
+      const { job } = await existingCompleteJobRes.json();
+
+      if (job?.status === "done") {
+        // Catches the case where the job is completed before the client connects
+        stream.writeSSE({
+          data: "Job already completed",
+          event: "complete",
+          id: jobId,
+        });
+        await stream.close();
+        return;
+      }
+
+      let jobEnded = false;
+
+      // Send initial connection message
+      stream.writeSSE({
+        data: "Connected to transcoding progress stream",
+        event: "connected",
+        id: jobId,
+      });
+
+      // Set up event listener for transcoding progress
+      const progressHandler = async (message: string) => {
+        if (message === COMPLETE_MESSAGE) {
+          stream.writeSSE({
+            data: message,
+            event: "complete",
+            id: jobId,
+          });
+          jobEnded = true;
+          return;
+        }
+
+        if (message === FAILED_MESSAGE) {
+          stream.writeSSE({
+            data: message,
+            event: "failed",
+            id: jobId,
+          });
+          jobEnded = true;
+          return;
+        }
+
+        stream.writeSSE({
+          data: message,
+          event: "progress",
+          id: jobId,
+        });
+      };
+
+      transcodingEvents.on(jobId, progressHandler);
+
+      // Handle client disconnect
+      stream.onAbort(() => {
+        console.log(`Client disconnected from job ${jobId}`);
+        transcodingEvents.off(jobId, progressHandler);
+      });
+
+      try {
+        // Sleep for 1 second until the job is complete
+        while (!jobEnded) {
+          await stream.sleep(1000);
+        }
+      } catch (error) {
+        // Stream was closed/aborted
+        console.log(`Stream closed for job ${jobId}`);
+        transcodingEvents.off(jobId, progressHandler);
+      }
+    });
+  })
+  .use("*", (c, next) => {
+    // upload and progress routes use their own auth middleware
+    if (
+      c.req.path.startsWith("/upload") ||
+      c.req.path.startsWith("/progress")
+    ) {
+      return next();
+    }
+    return apiKeyAuth(c, next, process.env.API_KEY!);
+  })
   .get("/", (c) => {
     return c.text("Hello Agent!");
   })
@@ -140,92 +236,31 @@ const agentApp = new Hono()
       });
     }
   )
-  .get("/progress/:jobId", async (c) => {
+  .post("/generate-token/:jobId", async (c) => {
     const { jobId } = c.req.param();
-    return streamSSE(c, async (stream) => {
-      const existingCompleteJobRes = await orchestratorClient.orchestrator.job[
-        ":jobId"
-      ].$get({
-        param: {
-          jobId,
-        },
-      });
 
-      const { job } = await existingCompleteJobRes.json();
+    const jobRes = await (
+      await orchestratorClient.orchestrator.job[":jobId"].$get({
+        param: { jobId },
+      })
+    ).json();
 
-      if (job?.status === "done") {
-        // Catches the case where the job is completed before the client connects
-        stream.writeSSE({
-          data: "Job already completed",
-          event: "complete",
-          id: jobId,
-        });
-        await stream.close();
-        return;
-      }
+    if (!jobRes.job) {
+      return c.json({ error: "Job not found" }, 404);
+    }
 
-      let jobEnded = false;
+    const job = jobRes.job;
 
-      // Send initial connection message
-      stream.writeSSE({
-        data: "Connected to transcoding progress stream",
-        event: "connected",
-        id: jobId,
-      });
+    if (job.status !== "queued" && job.status !== "encoding") {
+      return c.json({ error: "Job is not queued" }, 400);
+    }
 
-      // Set up event listener for transcoding progress
-      const progressHandler = async (message: string) => {
-        if (message === COMPLETE_MESSAGE) {
-          stream.writeSSE({
-            data: message,
-            event: "complete",
-            id: jobId,
-          });
-          jobEnded = true;
-          return;
-        }
+    const token = generateUploadToken(jobId);
 
-        if (message === FAILED_MESSAGE) {
-          stream.writeSSE({
-            data: message,
-            event: "failed",
-            id: jobId,
-          });
-          jobEnded = true;
-          return;
-        }
-
-        stream.writeSSE({
-          data: message,
-          event: "progress",
-          id: jobId,
-        });
-      };
-
-      transcodingEvents.on(jobId, progressHandler);
-
-      // Handle client disconnect
-      stream.onAbort(() => {
-        console.log(`Client disconnected from job ${jobId}`);
-        transcodingEvents.off(jobId, progressHandler);
-      });
-
-      try {
-        // Sleep for 1 second until the job is complete
-        while (!jobEnded) {
-          await stream.sleep(1000);
-        }
-      } catch (error) {
-        // Stream was closed/aborted
-        console.log(`Stream closed for job ${jobId}`);
-        transcodingEvents.off(jobId, progressHandler);
-      }
+    return c.json({
+      token,
     });
-  })
-  .all("/upload*", (c) => {
-    return tusServer.handleWeb(c.req.raw);
   });
-
 export type AgentApp = typeof agentApp;
 
 export default agentApp;

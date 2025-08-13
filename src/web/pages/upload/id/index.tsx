@@ -80,5 +80,35 @@ export async function UploadEditorPage({
     job = newJob;
   }
 
-  return <UploadEditor videoId={video.id} videoTitle={video.title} job={job} />;
+  let token: string | undefined;
+
+  if (job?.status === "queued" || job?.status === "encoding") {
+    const agentClient = createAgentClient(job.agent.url, env.AGENTS_API_KEY);
+    try {
+      const tokenResponse = await agentClient["generate-token"][":jobId"].$post(
+        {
+          param: { jobId: job.id },
+        }
+      );
+      const tokenData = await tokenResponse.json();
+      if ("token" in tokenData) {
+        token = tokenData.token;
+      } else {
+        console.error("Token generation failed:", tokenData);
+        <div>Error generating upload token</div>;
+      }
+    } catch (error) {
+      console.error("Error generating upload token", error);
+      return <div>Error generating upload token</div>;
+    }
+  }
+
+  return (
+    <UploadEditor
+      videoId={video.id}
+      videoTitle={video.title}
+      job={job}
+      token={token}
+    />
+  );
 }
