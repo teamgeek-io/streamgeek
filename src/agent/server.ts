@@ -9,8 +9,9 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { processPresets } from "./transcoder";
 import { EventEmitter } from "events";
-import createOrchestratorClient from "../orchestrator/client";
 import { uploadFolderToS3 } from "./s3";
+import { apiKeyAuth } from "@/shared/apiAuth";
+import { orchestratorClient } from "./orchestratorClient";
 
 const tusServer = new Server({
   path: "/upload",
@@ -31,13 +32,9 @@ const transcodingEvents = new EventEmitter();
 const COMPLETE_MESSAGE = "complete";
 const FAILED_MESSAGE = "failed";
 
-const orchestratorClient = createOrchestratorClient(
-  process.env.ORCHESTRATOR_URL!
-);
-
 const agentApp = new Hono()
   .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! })) // TODO: restrict to only the web app
-
+  .use("*", (c, next) => apiKeyAuth(c, next, process.env.API_KEY!))
   .get("/", (c) => {
     return c.text("Hello Agent!");
   })

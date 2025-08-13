@@ -6,6 +6,8 @@ import { z } from "zod";
 import { db } from "../db";
 import { JobStatus } from "../../generated/prisma/enums";
 import { PrismaClientKnownRequestError } from "../../generated/prisma/internal/prismaNamespace";
+import { apiKeyAuth } from "../shared/apiAuth";
+import { env } from "cloudflare:workers";
 
 /**
  * All of our orchestrator api endpoints live in this hono app.
@@ -16,6 +18,7 @@ import { PrismaClientKnownRequestError } from "../../generated/prisma/internal/p
  */
 const orchestratorApp = new Hono()
   .basePath("/orchestrator")
+  .use("*", (c, next) => apiKeyAuth(c, next, env.API_KEY!))
   .get("/", (c) => {
     return c.text("Hello Orchestrator!");
   })

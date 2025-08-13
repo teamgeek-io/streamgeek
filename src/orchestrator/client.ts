@@ -8,9 +8,13 @@ import ky from "ky";
  * @see https://github.com/orgs/honojs/discussions/3222 for more
  *
  */
-const createOrchestratorClient = (url: string) =>
+const createOrchestratorClient = (url: string, apiKey: string) =>
   hc<OrchestratorApp>(url, {
-    fetch: ky.create(),
+    fetch: ky.create({
+      headers: {
+        "X-API-Key": apiKey,
+      },
+    }),
   });
 
 export default createOrchestratorClient;

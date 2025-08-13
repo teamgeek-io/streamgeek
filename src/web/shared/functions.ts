@@ -4,6 +4,7 @@ import { requestInfo } from "rwsdk/worker";
 import { db } from "../../db";
 import { generateId } from "../lib/id";
 import createAgentClient from "../../agent/client";
+import { env } from "cloudflare:workers";
 
 /**
  * @module
@@ -53,7 +54,7 @@ export const startJob = async ({
       },
     });
 
-    const agentClient = createAgentClient(job.agent.url);
+    const agentClient = createAgentClient(job.agent.url, env.AGENTS_API_KEY);
     await agentClient.start[":jobId"].$post({
       param: { jobId },
       json: {

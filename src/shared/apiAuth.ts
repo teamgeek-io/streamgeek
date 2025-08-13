@@ -1,11 +1,14 @@
-import { env } from "cloudflare:workers";
+import { Context, Next } from "hono";
 
 /**
  * API Key authentication middleware
  */
-export const apiKeyAuth = async (c: any, next: any) => {
+export const apiKeyAuth = async (
+  c: Context,
+  next: Next,
+  expectedApiKey: string
+) => {
   const apiKey = c.req.header("X-API-Key");
-  const expectedApiKey = env.API_KEY;
 
   if (!expectedApiKey) {
     console.warn("ORCHESTRATOR_API_KEY not configured");

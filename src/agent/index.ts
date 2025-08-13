@@ -8,13 +8,9 @@
 
 import { serve } from "@hono/node-server";
 import agentApp from "./server";
-import createOrchestratorClient from "../orchestrator/client";
 import fs from "fs/promises";
 import { Agent } from "../db";
-
-const orchestratorClient = createOrchestratorClient(
-  process.env.ORCHESTRATOR_URL!
-);
+import { orchestratorClient } from "./orchestratorClient";
 
 const startServer = async () => {
   let agentId: string | null = null;

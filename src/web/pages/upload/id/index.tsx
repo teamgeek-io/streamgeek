@@ -4,6 +4,7 @@ import { db } from "../../../../db";
 import createAgentClient from "../../../../agent/client";
 import { UploadEditor } from "./editor";
 import { getAgent } from "../../../lib/agent";
+import { env } from "cloudflare:workers";
 
 export async function UploadEditorPage({
   params,
@@ -32,7 +33,7 @@ export async function UploadEditorPage({
   });
 
   if (job) {
-    const agentClient = createAgentClient(job.agent.url);
+    const agentClient = createAgentClient(job.agent.url, env.AGENTS_API_KEY);
     try {
       await agentClient.ping.$get();
     } catch (error) {

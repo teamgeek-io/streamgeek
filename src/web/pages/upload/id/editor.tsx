@@ -21,11 +21,17 @@ export function UploadEditor({
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
 
   const handleUploadComplete = async (result: UploadResult) => {
+    if (result.error || !result.uploadUrl) {
+      console.error(result.error);
+      setError(result.error || "Unknown error");
+      return;
+    }
+
     setUploadResult(result);
 
     const startJobActionRes = await startJob({
       jobId: job!.id,
-      sourceFileId: result.uploadUrl!.split("/").pop()!,
+      sourceFileId: result.uploadUrl.split("/").pop()!,
     });
 
     if (!startJobActionRes.success) {
@@ -33,7 +39,6 @@ export function UploadEditor({
     }
   };
 
-  // ToDo: need auth!
   return (
     <div>
       <h1>My video: {videoTitle}</h1>
