@@ -67,7 +67,6 @@ export const VideoPlayer = ({
             <MediaPlayerTime />
           </div>
           <div className="flex items-center gap-2">
-            <MediaPlayerCaptions />
             <MediaPlayerSettings />
             <MediaPlayerPiP />
             <MediaPlayerFullscreen />
