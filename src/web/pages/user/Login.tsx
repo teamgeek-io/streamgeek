@@ -11,6 +11,8 @@ import {
   startPasskeyLogin,
   startPasskeyRegistration,
 } from "./functions";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -60,20 +62,20 @@ export function Login() {
   };
 
   return (
-    <>
-      <input
+    <div className="flex flex-col gap-2">
+      <Input
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
-      <button onClick={handlePerformPasskeyLogin} disabled={isPending}>
+      <Button onClick={handlePerformPasskeyLogin} disabled={isPending}>
         {isPending ? <>...</> : "Login with passkey"}
-      </button>
-      <button onClick={handlePerformPasskeyRegister} disabled={isPending}>
+      </Button>
+      <Button onClick={handlePerformPasskeyRegister} disabled={isPending}>
         {isPending ? <>...</> : "Register with passkey"}
-      </button>
+      </Button>
       {result && <div>{result}</div>}
-    </>
+    </div>
   );
 }

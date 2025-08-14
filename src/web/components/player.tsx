@@ -16,13 +16,10 @@ import {
   MediaPlayerSeekForward,
   MediaPlayerVolume,
   MediaPlayerTime,
-  MediaPlayerCaptions,
   MediaPlayerSettings,
   MediaPlayerPiP,
   MediaPlayerFullscreen,
 } from "@/web/components/ui/media-player";
-import HlsVideoElementType from "hls-video-element";
-import React, { useEffect } from "react";
 
 export const VideoPlayer = ({
   video,
@@ -31,16 +28,6 @@ export const VideoPlayer = ({
   video: Video;
   className?: string;
 }) => {
-  const hlsRef = React.useRef<HlsVideoElementType>(null);
-
-  useEffect(() => {
-    if (hlsRef.current) {
-      hlsRef.current.api?.levels.forEach((level) => {
-        console.log(level);
-      });
-    }
-  }, [hlsRef.current]);
-
   return (
     <MediaPlayer autoHide className={className}>
       <MediaPlayerVideo asChild>
@@ -48,7 +35,6 @@ export const VideoPlayer = ({
           src={video.playlistUrl!}
           preload="auto"
           suppressHydrationWarning
-          ref={hlsRef}
           className="my-auto"
         />
       </MediaPlayerVideo>
@@ -61,14 +47,14 @@ export const VideoPlayer = ({
         <div className="flex w-full items-center gap-2">
           <div className="flex flex-1 items-center gap-2">
             <MediaPlayerPlay />
-            <MediaPlayerSeekBackward />
-            <MediaPlayerSeekForward />
+            <MediaPlayerSeekBackward className="hidden sm:block" />
+            <MediaPlayerSeekForward className="hidden sm:block" />
             <MediaPlayerVolume expandable />
             <MediaPlayerTime />
           </div>
           <div className="flex items-center gap-2">
             <MediaPlayerSettings />
-            <MediaPlayerPiP />
+            <MediaPlayerPiP className="hidden sm:block" />
             <MediaPlayerFullscreen />
           </div>
         </div>
@@ -76,31 +62,3 @@ export const VideoPlayer = ({
     </MediaPlayer>
   );
 };
-
-//   return (
-//     <MediaController className={className}>
-//       <HlsVideoElement
-//         src={video.playlistUrl!}
-//         slot="media"
-//         preload="auto"
-//         suppressHydrationWarning
-//       />
-//       <MediaControlBar>
-//         <MediaPlayButton></MediaPlayButton>
-//         <MediaSeekBackwardButton></MediaSeekBackwardButton>
-//         <MediaSeekForwardButton></MediaSeekForwardButton>
-//         <MediaTimeRange></MediaTimeRange>
-//         <MediaTimeDisplay showDuration remaining></MediaTimeDisplay>
-//         <MediaMuteButton></MediaMuteButton>
-//         <MediaVolumeRange></MediaVolumeRange>
-
-//         <MediaFullscreenButton></MediaFullscreenButton>
-//         <MediaPlaybackRateButton></MediaPlaybackRateButton>
-//       </MediaControlBar>
-//       <MediaLoadingIndicator
-//         slot="centered-chrome"
-//         noAutohide
-//       ></MediaLoadingIndicator>
-//     </MediaController>
-//   );
-// };
