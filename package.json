@@ -60,7 +60,7 @@
     "lucide-react": "^0.539.0",
     "media-chrome": "^4.12.0",
     "nanoid": "^5.1.5",
-    "rwsdk": "0.2.0-alpha.10",
+    "rwsdk": "0.1.35",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
     "zod": "^4.0.13"
