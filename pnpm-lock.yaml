@@ -99,8 +99,8 @@ importers:
         specifier: ^5.1.5
         version: 5.1.5
       rwsdk:
-        specifier: 0.1.35
-        version: 0.1.35(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250803.0)
+        specifier: 0.1.36
+        version: 0.1.36(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250803.0)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
@@ -3395,8 +3395,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  rwsdk@0.1.35:
-    resolution: {integrity: sha512-SsT2hAuYevfKON2950CHEBM99xopqfOVrMRhemoB9Fl49yzAjCk+c/uupIUijwyH5Q9NQ4VCGZUE7y9G52zuxg==}
+  rwsdk@0.1.36:
+    resolution: {integrity: sha512-6LENomyCNaTr8XCiUS2aRlP1zfIg+WGEOiVsgTYquFQRf+aXz76Cd/jt5pI+Q9EUsQNSiiSXWnyhBudp01hgUQ==}
     hasBin: true
     peerDependencies:
       vite: ^6.2.6
@@ -7471,7 +7471,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  rwsdk@0.1.35(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250803.0):
+  rwsdk@0.1.36(rollup@4.46.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(webpack@5.101.0)(workerd@1.20250803.0):
     dependencies:
       '@ast-grep/napi': 0.38.7
       '@cloudflare/vite-plugin': 1.7.4(rollup@4.46.1)(vite@6.3.5(@types/node@22.16.5)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1))(workerd@1.20250803.0)(wrangler@4.28.0(@cloudflare/workers-types@4.20250726.0))
