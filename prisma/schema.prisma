@@ -22,17 +22,18 @@ datasource db {
 }
 
 model Video {
-  id          String      @id // Video ID (nanoid-based, generated in app code)
-  title       String
-  description String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String   @id // Video ID (nanoid-based, generated in app code)
+  title        String
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   thumbnailUrl String?
   playlistUrl  String?
   duration     Int?
 
-  @@index([id])
   jobs Job[]
+
+  @@index([id])
 }
 
 enum JobStatus {
@@ -44,16 +45,16 @@ enum JobStatus {
 }
 
 model Job {
-  id          String      @id @default(uuid()) // Job ID (UUID-based)
-  videoId     String
-  video       Video      @relation(fields: [videoId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  status      JobStatus      @default(queued) 
-  agentId     String
-  sourceFileId      String?
-  errorMessage  String?
-  agent Agent @relation(fields: [agentId], references: [id])
+  id           String    @id @default(uuid()) // Job ID (UUID-based)
+  videoId      String
+  video        Video     @relation(fields: [videoId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  status       JobStatus @default(queued)
+  agentId      String
+  sourceFileId String?
+  errorMessage String?
+  agent        Agent     @relation(fields: [agentId], references: [id])
 
   @@index([id])
   @@index([videoId])
@@ -61,11 +62,71 @@ model Job {
 }
 
 model Agent {
-  id          String      @id @default(uuid()) // Agent ID (UUID-based)
-  url        String
-  lastSeen    DateTime
-  createdAt   DateTime    @default(now())
-  jobs Job[]
+  id        String   @id @default(uuid()) // Agent ID (UUID-based)
+  url       String
+  lastSeen  DateTime
+  createdAt DateTime @default(now())
+  jobs      Job[]
 
   @@index([id])
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
