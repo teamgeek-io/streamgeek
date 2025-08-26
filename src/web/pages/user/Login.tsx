@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import {
-  startAuthentication,
-  startRegistration,
-} from "@simplewebauthn/browser";
-import {
-  finishPasskeyLogin,
-  finishPasskeyRegistration,
-  startPasskeyLogin,
-  startPasskeyRegistration,
-} from "./functions";
+
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 
@@ -21,36 +12,30 @@ export function Login() {
 
   const passkeyLogin = async () => {
     // 1. Get a challenge from the worker
-    const options = await startPasskeyLogin();
-
+    // const options = await startPasskeyLogin();
     // 2. Ask the browser to sign the challenge
-    const login = await startAuthentication({ optionsJSON: options });
-
+    // const login = await startAuthentication({ optionsJSON: options });
     // 3. Give the signed challenge to the worker to finish the login process
-    const success = await finishPasskeyLogin(login);
-
-    if (!success) {
-      setResult("Login failed");
-    } else {
-      setResult("Login successful!");
-    }
+    // const success = await finishPasskeyLogin(login);
+    // if (!success) {
+    //   setResult("Login failed");
+    // } else {
+    //   setResult("Login successful!");
+    // }
   };
 
   const passkeyRegister = async () => {
     // 1. Get a challenge from the worker
-    const options = await startPasskeyRegistration(username);
-
+    // const options = await startPasskeyRegistration(username);
     // 2. Ask the browser to sign the challenge
-    const registration = await startRegistration({ optionsJSON: options });
-
+    // const registration = await startRegistration({ optionsJSON: options });
     // 3. Give the signed challenge to the worker to finish the registration process
-    const success = await finishPasskeyRegistration(username, registration);
-
-    if (!success) {
-      setResult("Registration failed");
-    } else {
-      setResult("Registration successful!");
-    }
+    // const success = await finishPasskeyRegistration(username, registration);
+    // if (!success) {
+    //   setResult("Registration failed");
+    // } else {
+    //   setResult("Registration successful!");
+    // }
   };
 
   const handlePerformPasskeyLogin = () => {
