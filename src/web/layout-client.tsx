@@ -28,11 +28,6 @@ export function AppLayoutClient({
     window.location.href = "/user/login";
   };
 
-  // Only show auth button if not on /user/* routes
-  const shouldShowAuthButton =
-    typeof window !== "undefined" &&
-    !window.location.pathname.startsWith("/user/");
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="theme">
       <div className=" mx-8 sm:mx-24 my-8 flex flex-col gap-8 2xl:mx-48">
@@ -52,23 +47,23 @@ export function AppLayoutClient({
                 </a>
               </Button>
             )}
-            {shouldShowAuthButton && (
-              <Button
-                size="icon"
-                variant={session ? "outline" : "default"}
-                onClick={session ? handleLogout : handleLogin}
-              >
-                {session ? (
-                  <>
-                    <LogOut className="h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            )}
+
+            <Button
+              size="icon"
+              variant={session ? "outline" : "default"}
+              onClick={session ? handleLogout : handleLogin}
+            >
+              {session ? (
+                <>
+                  <LogOut className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+
             <ModeToggle />
           </div>
         </div>

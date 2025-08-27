@@ -4,6 +4,13 @@ import { useState, useTransition } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { authClient } from "../../lib/auth-client";
 import { link } from "../../shared/links";
 
@@ -68,97 +75,100 @@ export function Register() {
 
   return (
     <div className="flex flex-col gap-4 max-w-md mx-auto p-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Create Account</h1>
-        <p className="text-gray-600">Sign up to get started</p>
-      </div>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+          <CardDescription>Sign up to get started</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+            }}
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name" className="text-sm font-medium">
+                Name
+              </label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
 
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleRegister();
-        }}
-      >
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium">
-            Name
-          </label>
-          <Input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your full name"
-            required
-          />
-        </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email
-          </label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
-        </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-sm font-medium">
-            Password
-          </label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirm Password
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="confirmPassword" className="text-sm font-medium">
-            Confirm Password
-          </label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm your password"
-            required
-          />
-        </div>
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? "Creating Account..." : "Create Account"}
+            </Button>
 
-        <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Creating Account..." : "Create Account"}
-        </Button>
+            {error && (
+              <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
+                {error}
+              </div>
+            )}
 
-        {error && (
-          <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
-            {error}
-          </div>
-        )}
+            {success && (
+              <div className="text-green-600 text-sm text-center p-2 bg-green-50 rounded">
+                {success}
+              </div>
+            )}
 
-        {success && (
-          <div className="text-green-600 text-sm text-center p-2 bg-green-50 rounded">
-            {success}
-          </div>
-        )}
-
-        <div className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <a href="/user/login" className="text-blue-600 hover:underline">
-            Sign in here
-          </a>
-        </div>
-      </form>
+            <div className="text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <a href="/user/login" className="text-blue-600 hover:underline">
+                Sign in here
+              </a>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
