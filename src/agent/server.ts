@@ -206,7 +206,7 @@ const agentApp = new Hono()
               videoId,
             },
             json: {
-              thumbnailUrl: `${process.env.S3_PUBLIC_ACCESS}/${videoId}/thumbnail.jpg`,
+              thumbnailUrl: `${process.env.S3_PUBLIC_ACCESS}/${videoId}/thumbnail.jpeg`,
               playlistUrl: `${process.env.S3_PUBLIC_ACCESS}/${videoId}/playlist.m3u8`,
             },
           });
