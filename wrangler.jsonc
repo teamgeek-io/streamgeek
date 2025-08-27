@@ -10,23 +10,9 @@
   "observability": {
     "enabled": true
   },
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "SESSION_DURABLE_OBJECT",
-        "class_name": "SessionDurableObject"
-      }
-    ]
-  },
-  "vars": {
-    "WEBAUTHN_APP_NAME": "streamgeek"
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["SessionDurableObject"]
-    }
-  ],
+  // "vars": {
+  //   "WEBAUTHN_APP_NAME": "streamgeek"
+  // },
   "d1_databases": [
     {
       "binding": "DB",

@@ -9,7 +9,7 @@ export const createAuth = async (env: any) => {
       provider: "sqlite",
     }),
     appName: "StreamGeek",
-    baseURL: env.BETTER_AUTH_URL || "http://localhost:5173",
+    baseURL: env.BASE_URL || "http://localhost:5173",
     emailAndPassword: {
       enabled: true,
     },

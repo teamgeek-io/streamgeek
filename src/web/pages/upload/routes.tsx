@@ -4,8 +4,17 @@ import { CreateUpload } from ".";
 import { UploadEditorPage } from "./id";
 import { db } from "../../../db";
 import { link } from "../../shared/links";
+import { AppContext } from "../../../worker";
 
 export const uploadRoutes = [
+  async ({ ctx }: { ctx: AppContext }) => {
+    if (!ctx.user) {
+      return new Response(null, {
+        status: 302,
+        headers: { Location: "/user/login" },
+      });
+    }
+  },
   route("/", () => <CreateUpload />),
   route("/:id", async ({ params }) => {
     const { id } = params;

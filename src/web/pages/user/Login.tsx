@@ -4,63 +4,112 @@ import { useState, useTransition } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
+import { authClient } from "../../lib/auth-client";
+import { link } from "../../shared/links";
 
 export function Login() {
-  const [username, setUsername] = useState("");
-  const [result, setResult] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
 
-  const passkeyLogin = async () => {
-    // 1. Get a challenge from the worker
-    // const options = await startPasskeyLogin();
-    // 2. Ask the browser to sign the challenge
-    // const login = await startAuthentication({ optionsJSON: options });
-    // 3. Give the signed challenge to the worker to finish the login process
-    // const success = await finishPasskeyLogin(login);
-    // if (!success) {
-    //   setResult("Login failed");
-    // } else {
-    //   setResult("Login successful!");
-    // }
+  const emailLogin = async () => {
+    // Basic validation
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onRequest: (ctx) => {
+          setError("");
+          // show loading
+        },
+        onSuccess: (ctx) => {
+          // redirect to the dashboard or sign in page
+          window.location.href = link("/upload");
+        },
+        onError: (ctx) => {
+          // display the error message
+          setError(ctx.error.message);
+        },
+      }
+    );
   };
 
-  const passkeyRegister = async () => {
-    // 1. Get a challenge from the worker
-    // const options = await startPasskeyRegistration(username);
-    // 2. Ask the browser to sign the challenge
-    // const registration = await startRegistration({ optionsJSON: options });
-    // 3. Give the signed challenge to the worker to finish the registration process
-    // const success = await finishPasskeyRegistration(username, registration);
-    // if (!success) {
-    //   setResult("Registration failed");
-    // } else {
-    //   setResult("Registration successful!");
-    // }
-  };
-
-  const handlePerformPasskeyLogin = () => {
-    startTransition(() => void passkeyLogin());
-  };
-
-  const handlePerformPasskeyRegister = () => {
-    startTransition(() => void passkeyRegister());
+  const handleLogin = () => {
+    startTransition(() => void emailLogin());
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <Input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <Button onClick={handlePerformPasskeyLogin} disabled={isPending}>
-        {isPending ? <>...</> : "Login with passkey"}
-      </Button>
-      <Button onClick={handlePerformPasskeyRegister} disabled={isPending}>
-        {isPending ? <>...</> : "Register with passkey"}
-      </Button>
-      {result && <div>{result}</div>}
+    <div className="flex flex-col gap-4 max-w-md mx-auto p-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">Welcome Back</h1>
+        <p className="text-gray-600">Sign in to your account</p>
+      </div>
+
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+      >
+        <div className="flex flex-col gap-2">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email
+          </label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <Button type="submit" disabled={isPending} className="w-full">
+          {isPending ? "Signing In..." : "Sign In"}
+        </Button>
+
+        {error && (
+          <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
+            {error}
+          </div>
+        )}
+
+        <div className="text-center text-sm text-gray-600">
+          Don't have an account?{" "}
+          <a href="/user/register" className="text-blue-600 hover:underline">
+            Sign up here
+          </a>
+        </div>
+      </form>
     </div>
   );
 }

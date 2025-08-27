@@ -1,0 +1,79 @@
+"use client";
+
+import { ThemeProvider } from "@/web/components/theme-provider";
+import { ModeToggle } from "@/web/components/mode-toggle";
+import { Button } from "@/web/components/ui/button";
+import { authClient } from "@/web/lib/auth-client";
+import { Video, LogIn, LogOut, Upload } from "lucide-react";
+import { Session } from "better-auth";
+import { link } from "./shared/links";
+
+export function AppLayoutClient({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session?: Session | null;
+}) {
+  const handleLogout = async () => {
+    try {
+      await authClient.signOut();
+      window.location.href = "/user/login";
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  const handleLogin = () => {
+    window.location.href = "/user/login";
+  };
+
+  // Only show auth button if not on /user/* routes
+  const shouldShowAuthButton =
+    typeof window !== "undefined" &&
+    !window.location.pathname.startsWith("/user/");
+
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="theme">
+      <div className=" mx-8 sm:mx-24 my-8 flex flex-col gap-8 2xl:mx-48">
+        <div className="flex justify-between items-center gap-4">
+          <a
+            href="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <Video className="h-6 w-6" />
+            <h1 className="text-xl font-semibold">StreamGeek</h1>
+          </a>
+          <div className="flex items-center gap-4">
+            {session && (
+              <Button variant="outline" asChild size="icon">
+                <a href={link("/upload")}>
+                  <Upload className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
+            {shouldShowAuthButton && (
+              <Button
+                size="icon"
+                variant={session ? "outline" : "default"}
+                onClick={session ? handleLogout : handleLogin}
+              >
+                {session ? (
+                  <>
+                    <LogOut className="h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            )}
+            <ModeToggle />
+          </div>
+        </div>
+        <div>{children}</div>
+      </div>
+    </ThemeProvider>
+  );
+}
