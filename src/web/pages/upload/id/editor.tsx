@@ -73,25 +73,12 @@ export function UploadEditor({
           {job ? (
             <div className="space-y-4">
               {uploadResult || job.status === "encoding" ? (
-                <div className="space-y-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <p className="text-green-700 font-medium">
-                      Upload complete! You can now close this tab.
-                    </p>
-                    <p className="text-green-600 text-sm mt-1">
-                      Encoding in progress...
-                    </p>
-                  </div>
-
-                  {token && (
-                    <TranscodeStatus
-                      url={job.agent.url}
-                      jobId={job.id}
-                      videoId={videoId}
-                      token={token}
-                    />
-                  )}
-                </div>
+                <TranscodeStatus
+                  url={job.agent.url}
+                  jobId={job.id}
+                  videoId={videoId}
+                  token={token!}
+                />
               ) : (
                 <div className="space-y-4">
                   {token ? (
