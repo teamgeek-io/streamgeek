@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/web/components/theme-provider";
 import { ModeToggle } from "@/web/components/mode-toggle";
 import { Button } from "@/web/components/ui/button";
 import { authClient } from "@/web/lib/auth-client";
-import { Video, LogIn, LogOut, Upload } from "lucide-react";
+import { Video, LogIn, LogOut, Upload, HardDriveUpload } from "lucide-react";
 import { Session } from "better-auth";
 import { link } from "./shared/links";
 
@@ -43,11 +43,12 @@ export function AppLayoutClient({
             {session && (
               <Button variant="outline" asChild size="icon">
                 <a href={link("/upload")}>
-                  <Upload className="h-4 w-4" />
+                  <HardDriveUpload className="h-4 w-4" />
                 </a>
               </Button>
             )}
 
+            <ModeToggle />
             <Button
               size="icon"
               variant={session ? "outline" : "default"}
@@ -63,8 +64,6 @@ export function AppLayoutClient({
                 </>
               )}
             </Button>
-
-            <ModeToggle />
           </div>
         </div>
         <div>{children}</div>
