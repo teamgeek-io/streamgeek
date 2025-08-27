@@ -4,6 +4,7 @@ import { db } from "../../../../db";
 import createAgentClient from "../../../../agent/client";
 import { UploadEditor } from "./editor";
 import { getAgent } from "../../../lib/agent";
+import { ErrorCard } from "../../../components/error-card";
 import { env } from "cloudflare:workers";
 
 export async function UploadEditorPage({
@@ -17,7 +18,12 @@ export async function UploadEditorPage({
   });
 
   if (!video) {
-    return <div>Video not found</div>;
+    return (
+      <ErrorCard
+        title="Video Not Found"
+        message="The requested video could not be found."
+      />
+    );
   }
 
   let job = await db.job.findFirst({
@@ -49,10 +55,10 @@ export async function UploadEditorPage({
 
     if (!agent) {
       return (
-        <div>
-          No agent available, make sure at least one agent is running and is
-          pointed to this app
-        </div>
+        <ErrorCard
+          title="No Agent Available"
+          message="No agent is currently available. Please make sure at least one agent is running and is pointed to this app."
+        />
       );
     }
 
@@ -95,11 +101,21 @@ export async function UploadEditorPage({
         token = tokenData.token;
       } else {
         console.error("Token generation failed:", tokenData);
-        <div>Error generating upload token</div>;
+        return (
+          <ErrorCard
+            title="Token Generation Failed"
+            message="Failed to generate upload token. Please try again."
+          />
+        );
       }
     } catch (error) {
       console.error("Error generating upload token", error);
-      return <div>Error generating upload token</div>;
+      return (
+        <ErrorCard
+          title="Token Generation Error"
+          message="An error occurred while generating the upload token. Please try again."
+        />
+      );
     }
   }
 
