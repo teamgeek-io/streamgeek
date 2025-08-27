@@ -55,15 +55,11 @@ export function UploadEditor({
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Upload Video</CardTitle>
           <CardDescription>
-            Upload your video file to start processing
+            Drop a file for <span className="font-bold">{videoTitle}</span>{" "}
+            below
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Video Title:</span>
-            <span className="text-sm text-gray-600">{videoTitle}</span>
-          </div>
-
           {error && (
             <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
               Error: {error}
@@ -114,9 +110,9 @@ export function UploadEditor({
       </Card>
 
       {job && (
-        <div className="text-center text-xs text-gray-400 space-x-4">
+        <div className="text-center text-xs text-gray-400 space-x-4 flex justify-between flex-col sm:flex-row">
           <span>Job ID: {job.id}</span>
-          <span>Agent: {job.agentId}</span>
+          <span>Agent: {job.agent.url}</span>
         </div>
       )}
     </div>
