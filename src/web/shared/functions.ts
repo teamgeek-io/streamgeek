@@ -11,7 +11,7 @@ import { env } from "cloudflare:workers";
  *
  * All of our orchestrator server functions live here.
  *
- * These dont need to be endpoints since they are called directly from this app.
+ * These dont need to be endpoints since they are called directly from react components.
  *
  */
 
@@ -19,7 +19,9 @@ export const createVideo = async (title: string) => {
   try {
     const { ctx } = requestInfo;
 
-    console.log(ctx);
+    if (!ctx.user) {
+      return { success: false, error: new Error("User not authenticated") };
+    }
 
     // Generate nanoid for the video
     const videoId = generateId();
@@ -46,6 +48,12 @@ export const startJob = async ({
   sourceFileId: string;
 }) => {
   try {
+    const { ctx } = requestInfo;
+
+    if (!ctx.user) {
+      return { success: false, error: new Error("User not authenticated") };
+    }
+
     const job = await db.job.update({
       where: { id: jobId },
       data: { status: "encoding", sourceFileId },
