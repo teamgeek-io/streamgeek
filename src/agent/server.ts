@@ -197,7 +197,7 @@ const agentApp = new Hono()
           await fs.rm(`${inputPath.pathname}.json`);
 
           // Delete output folder
-          await fs.rm(`${outputFolder.pathname}`, {
+          await fs.rm(`${outputFolder.pathname}/${videoId}`, {
             recursive: true,
           });
 
