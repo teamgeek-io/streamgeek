@@ -120,11 +120,15 @@ export async function UploadEditorPage({
   }
 
   return (
-    <UploadEditor
-      videoId={video.id}
-      videoTitle={video.title}
-      job={job}
-      token={token}
-    />
+    <>
+      <title>{`Upload for ${video.title} - StreamGeek`}</title>
+      <meta name="description" content="Upload a video to StreamGeek" />
+      <UploadEditor
+        videoId={video.id}
+        videoTitle={video.title}
+        job={job}
+        token={token}
+      />
+    </>
   );
 }

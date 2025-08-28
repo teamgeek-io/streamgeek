@@ -15,17 +15,21 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {video.playlistUrl && (
-        <VideoPlayer
-          video={video}
-          className="aspect-16/9 w-full max-h-[75dvh]"
-        />
-      )}
-      <h1 className="text-2xl font-bold">{video.title}</h1>
-      {video.description && (
-        <p className="text-sm text-gray-500">{video.description}</p>
-      )}
-    </div>
+    <>
+      <title>{`${video.title} - StreamGeek`}</title>
+      <meta name="description" content={video.description ?? ""} />
+      <div className="flex flex-col gap-4">
+        {video.playlistUrl && (
+          <VideoPlayer
+            video={video}
+            className="aspect-16/9 w-full max-h-[75dvh]"
+          />
+        )}
+        <h1 className="text-2xl font-bold">{video.title}</h1>
+        {video.description && (
+          <p className="text-sm text-gray-500">{video.description}</p>
+        )}
+      </div>
+    </>
   );
 }
