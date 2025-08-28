@@ -15,6 +15,7 @@ import orchestratorApp from "./orchestrator/server";
 import { videoRoutes } from "./web/pages/video/routes";
 import { createAuth } from "./web/lib/auth";
 import { AppLayoutServer } from "./web/layout-server";
+import { EmbedPage } from "./web/pages/embed";
 
 export type AppContext = {
   session: Session | null;
@@ -43,7 +44,9 @@ export default defineApp([
     const auth = await createAuth(env);
     return auth.handler(request);
   }),
+
   render(Document, [
+    route("/embed/:id", EmbedPage),
     prefix("/orchestrator", orchestratorApp),
     layout(AppLayoutServer, [
       route("/", Home),

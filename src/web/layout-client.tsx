@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/web/components/theme-provider";
 import { ModeToggle } from "@/web/components/mode-toggle";
 import { Button } from "@/web/components/ui/button";
 import { authClient } from "@/web/lib/auth-client";
-import { Video, LogIn, LogOut, Upload, HardDriveUpload } from "lucide-react";
+import { Video, LogIn, LogOut, HardDriveUpload } from "lucide-react";
 import { Session } from "better-auth";
 import { link } from "./shared/links";
 
