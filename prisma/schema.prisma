@@ -30,6 +30,8 @@ model Video {
   thumbnailUrl String?
   playlistUrl  String?
   duration     Int?
+  width        Int?
+  height       Int?
 
   jobs Job[]
 

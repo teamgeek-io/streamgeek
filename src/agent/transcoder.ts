@@ -15,7 +15,7 @@ type Preset = {
   bitrate: number;
 };
 
-const presets: Preset[] = [
+const PRESETS: Preset[] = [
   { resolution: 2160, bitrate: 15000 },
   { resolution: 1440, bitrate: 10000 },
   { resolution: 1080, bitrate: 8000 },
@@ -219,11 +219,11 @@ export async function processPresets(
   const input_resolution =
     orientation === "vertical" ? input_width : input_height;
 
-  const relevant_presets = presets.filter(
+  const relevant_presets = PRESETS.filter(
     (preset) => preset.resolution <= input_resolution
   );
   console.log(
-    `Processing ${relevant_presets.length} relevant presets out of ${presets.length} total presets for ${orientation} video`
+    `Processing ${relevant_presets.length} relevant presets out of ${PRESETS.length} total presets for ${orientation} video`
   );
 
   const results: TranscodeResult[] = [];

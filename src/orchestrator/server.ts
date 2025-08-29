@@ -99,14 +99,16 @@ const orchestratorApp = new Hono()
       z.object({
         thumbnailUrl: z.string().optional(),
         playlistUrl: z.string().optional(),
+        width: z.number().optional(),
+        height: z.number().optional(),
       })
     ),
     async (c) => {
       const { videoId } = c.req.param();
-      const { thumbnailUrl, playlistUrl } = c.req.valid("json");
+      const { thumbnailUrl, playlistUrl, width, height } = c.req.valid("json");
       const video = await db.video.update({
         where: { id: videoId },
-        data: { thumbnailUrl, playlistUrl },
+        data: { thumbnailUrl, playlistUrl, width, height },
       });
       return c.json({ video });
     }

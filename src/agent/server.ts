@@ -14,6 +14,7 @@ import { apiKeyAuth } from "@/shared/apiAuth";
 import { orchestratorClient } from "./orchestratorClient";
 import { generateUploadToken } from "./tokenUtils";
 import { uploadTokenAuth } from "./uploadAuth";
+import { getResolution } from "./utils";
 
 const tusServer = new Server({
   path: "/upload",
@@ -174,6 +175,8 @@ const agentApp = new Hono()
         transcodingEvents.emit(jobId, message);
       })
         .then(async () => {
+          const dimensions = await getResolution(decodeURI(inputPath.pathname));
+
           transcodingEvents.emit(jobId, "Uploading to R2");
 
           await orchestratorClient.orchestrator.job[":jobId"].$patch({
@@ -208,6 +211,8 @@ const agentApp = new Hono()
             json: {
               thumbnailUrl: `${process.env.S3_PUBLIC_ACCESS}/${videoId}/thumbnail.jpeg`,
               playlistUrl: `${process.env.S3_PUBLIC_ACCESS}/${videoId}/playlist.m3u8`,
+              width: dimensions[0],
+              height: dimensions[1],
             },
           });
 

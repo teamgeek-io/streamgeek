@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Video" ADD COLUMN "height" INTEGER;
+ALTER TABLE "Video" ADD COLUMN "width" INTEGER;
