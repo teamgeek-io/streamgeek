@@ -1,6 +1,7 @@
 import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
 import { VideoPlayer } from "../../../components/player";
+import { cn } from "../../../lib/utils";
 
 export async function VideoPage({ ctx, params }: RequestInfo) {
   const { id } = params;
@@ -22,7 +23,15 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
         {video.playlistUrl && (
           <VideoPlayer
             video={video}
-            className="aspect-16/9 w-full max-h-[75dvh]"
+            className={cn(
+              "w-full ",
+              video.width && video.height
+                ? video.width > video.height
+                  ? "aspect-16/9 max-h-[75dvh]"
+                  : //wip
+                    "aspect-9/16 max-h-full max-w-[50%]"
+                : "aspect-16/9 max-h-[75dvh]"
+            )}
           />
         )}
         <h1 className="text-2xl font-bold">{video.title}</h1>
