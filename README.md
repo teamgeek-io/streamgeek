@@ -4,9 +4,9 @@ POC for rolling our own video streaming! 🎥🚀🔥
 
 - Vite
 - database (Prisma via D1)
-- Session Management (via DurableObjects)
-- Passkey authentication (Webauthn)
+- Auth (better auth)
 - Storage (via R2)
+- Transcoding agents (node + ffmpeg + docker)
 
 ## Setup / Deployment
 
