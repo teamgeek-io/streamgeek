@@ -5,17 +5,17 @@ import { env } from "cloudflare:workers";
 export default defineScript(async () => {
   await setupDb(env);
 
-  await db.$executeRawUnsafe(`\
-    DELETE FROM User;
-    DELETE FROM sqlite_sequence;
-  `);
+  console.error("NOT IMPLEMENTED");
 
-  await db.user.create({
-    data: {
-      id: "1",
-      username: "testuser",
-    },
-  });
+  // await db.$executeRawUnsafe(`\
+  //   DELETE FROM User;
+  //   DELETE FROM sqlite_sequence;
+  // `);
 
-  console.log("🌱 Finished seeding");
+  // await db.user.create({
+  //   data: {
+  //     id: "1",
+  //     username: "testuser",
+  //   },
+  // });
 });
