@@ -37,7 +37,10 @@ export function AppLayoutClient({
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <Video className="h-6 w-6" />
-            <h1 className="text-xl font-semibold">StreamGeek</h1>
+            <h1 className="text-xl sm:block hidden font-semibold">
+              StreamGeek
+            </h1>
+            <h1 className="text-xl sm:hidden font-semibold">STRMGK</h1>
           </a>
           <div className="flex items-center gap-4">
             {session && (
