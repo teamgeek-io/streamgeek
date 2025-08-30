@@ -26,7 +26,7 @@ Within your project's `wrangler.jsonc`:
 - Create a new D1 database:
 
 ```shell
-npx wrangler d1 create my-project-db
+pnpx wrangler d1 create my-project-db
 ```
 
 Copy the database ID provided and paste it into your project's `wrangler.jsonc` file:

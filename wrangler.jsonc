@@ -16,8 +16,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "streamgeek-test",
-      "database_id": "09ba182a-0204-4c07-ae36-98701db5c361"
+      "database_name": "streamgeek",
+      // this is Tom's deployment DB
+      "database_id": "3c2a05e7-cb46-4cc9-a3a6-41c4e9b9a5e4"
     }
   ]
 }
