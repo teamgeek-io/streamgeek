@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { RouteMiddleware } from "rwsdk/router";
 
 export const setCommonHeaders =
@@ -26,6 +27,6 @@ export const setCommonHeaders =
     // Defines trusted sources for content loading and script execution:
     response.headers.set(
       "Content-Security-Policy",
-      `default-src 'self'; script-src 'self' 'nonce-${nonce}' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: *; frame-src https://challenges.cloudflare.com; connect-src 'self' *; media-src 'self' blob: data:; object-src 'none';`
+      `default-src 'self'; script-src 'self' 'nonce-${nonce}' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: *; frame-src https://challenges.cloudflare.com; connect-src 'self' *; media-src 'self' blob: data: ${env.S3_PUBLIC_ACCESS}; object-src 'none';`
     );
   };
