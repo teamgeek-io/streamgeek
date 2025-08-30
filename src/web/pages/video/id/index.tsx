@@ -2,6 +2,8 @@ import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
 import { VideoPlayer } from "../../../components/player";
 import { ShareDialog } from "../../../components/share-dialog";
+import { EditDialog } from "../../../components/edit-dialog";
+import { DeleteDialog } from "../../../components/delete-dialog";
 import { cn } from "../../../lib/utils";
 import { env } from "cloudflare:workers";
 
@@ -43,13 +45,21 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
         <div className={cn("w-full", isVertical && "sm:max-w-[50vw] mx-auto")}>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{video.title}</h1>
-            <ShareDialog
-              videoId={video.id}
-              videoTitle={video.title}
-              playlistUrl={video.playlistUrl}
-              baseUrl={env.BASE_URL}
-              isVertical={isVertical}
-            />
+            <div className="flex items-center gap-2">
+              <EditDialog
+                videoId={video.id}
+                videoTitle={video.title}
+                videoDescription={video.description || undefined}
+              />
+              <ShareDialog
+                videoId={video.id}
+                videoTitle={video.title}
+                playlistUrl={video.playlistUrl}
+                baseUrl={env.BASE_URL}
+                isVertical={isVertical}
+              />
+              <DeleteDialog videoId={video.id} videoTitle={video.title} />
+            </div>
           </div>
           {video.description && (
             <p className="text-sm text-gray-500">{video.description}</p>

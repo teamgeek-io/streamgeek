@@ -5,6 +5,7 @@ import { db } from "../../db";
 import { generateId } from "../lib/id";
 import createAgentClient from "../../agent/client";
 import { env } from "cloudflare:workers";
+import { deleteFolderFromS3 } from "../lib/s3";
 
 /**
  * @module
@@ -32,6 +33,64 @@ export const createVideo = async (title: string) => {
         title,
       },
     });
+
+    return { success: true, video, error: null };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error as Error };
+  }
+};
+
+export const updateVideo = async ({
+  id,
+  title,
+  description,
+}: {
+  id: string;
+  title: string;
+  description: string;
+}) => {
+  try {
+    const { ctx } = requestInfo;
+
+    if (!ctx.user) {
+      return { success: false, error: new Error("User not authenticated") };
+    }
+
+    const video = await db.video.update({
+      where: { id },
+      data: {
+        description,
+        title,
+      },
+    });
+
+    return { success: true, video, error: null };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error as Error };
+  }
+};
+
+export const deleteVideo = async ({ id }: { id: string }) => {
+  try {
+    const { ctx } = requestInfo;
+
+    if (!ctx.user) {
+      return { success: false, error: new Error("User not authenticated") };
+    }
+
+    await db.job.deleteMany({
+      where: { videoId: id },
+    });
+
+    const video = await db.video.delete({
+      where: { id },
+    });
+
+    if (video.playlistUrl) {
+      await deleteFolderFromS3(video.id);
+    }
 
     return { success: true, video, error: null };
   } catch (error) {

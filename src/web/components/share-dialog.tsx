@@ -54,7 +54,7 @@ export function ShareDialog({
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Share2 className="h-4 w-4" />
-          Share
+          <span className="hidden sm:block">Share</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
