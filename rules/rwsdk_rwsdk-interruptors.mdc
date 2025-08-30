@@ -1,9 +1,8 @@
 ---
 description: RedwoodSDK: Request Interruptors
-globs: worker.tsx,src/app/**/routes.ts,src/app/**/*/routes.ts
+globs: worker.tsx,src/web/**/routes.ts,src/web/**/*/routes.ts
 alwaysApply: false
 ---
-
 
 # RedwoodSDK: Request Interruptors
 
@@ -81,7 +80,7 @@ export function validateInput(schema) {
     } catch (error) {
       return Response.json(
         { error: "Validation failed", details: error.errors },
-        { status: 400 },
+        { status: 400 }
       );
     }
   };
@@ -244,4 +243,3 @@ export const routes = [
   route("/users", [isAdmin, logRequests, UserManagement]),
 ];
 ```
-

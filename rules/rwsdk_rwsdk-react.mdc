@@ -1,6 +1,6 @@
 ---
 description: RedwoodSDK: React, React Server Components, and React Server Functions Rules
-globs: src/app/**/*/*.tsx,Document.tsx
+globs: src/web/**/*/*.tsx,Document.tsx
 alwaysApply: false
 ---
 
@@ -107,4 +107,3 @@ export async function addTodo(formData: FormData) {
 5. Keep client components as small as possible, moving server-side logic to server components or server functions.
 6. Always mark client components with "use client" directive.
 7. Always mark server functions with "use server" directive.
-

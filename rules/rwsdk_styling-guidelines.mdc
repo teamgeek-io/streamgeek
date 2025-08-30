@@ -1,0 +1,294 @@
+---
+description: Application styling and component guidelines
+globs: src/web/**/*/*.tsx
+alwaysApply: false
+---
+
+# Styling Guidelines for StreamGeek
+
+## Overview
+
+This document outlines the styling patterns, component usage, and design conventions established for the StreamGeek application using shadcn/ui components and Tailwind CSS.
+
+## Core Design Principles
+
+### 1. Card-Based Layouts
+
+- **Container Pattern**: Use `max-w-md mx-auto p-6` for centered, consistent page layouts
+- **Card Structure**: Wrap main content in `Card` with `CardHeader`, `CardTitle`, `CardDescription`, and `CardContent`
+- **Consistent Spacing**: Use `space-y-4` or `gap-4` for vertical spacing between elements
+
+### 2. Error Handling
+
+- **ErrorCard Component**: Use the reusable `ErrorCard` component for consistent error display
+- **Error Styling**: Use `text-destructive` for error text (adapts to light/dark themes)
+- **Error Containers**: Use `text-red-500 text-sm text-center p-2 bg-red-50 rounded` for inline errors
+
+### 3. Form Design
+
+- **Input Groups**: Wrap inputs in `div` with `flex flex-col gap-2`
+- **Labels**: Use `text-sm font-medium` for form labels
+- **Buttons**: Use `Button` component with `w-full` for full-width buttons
+- **Loading States**: Show `disabled` state and loading text (e.g., "Creating..." vs "Create Video")
+
+## Component-Specific Guidelines
+
+### 1. Card Components
+
+```tsx
+// Standard card structure
+<Card>
+  <CardHeader className="text-center">
+    <CardTitle className="text-2xl font-bold">Title</CardTitle>
+    <CardDescription>Description text</CardDescription>
+  </CardHeader>
+  <CardContent>{/* Content */}</CardContent>
+</Card>
+```
+
+### 2. Badge Usage
+
+- **Status Indicators**: Use `Badge` component for job IDs, agent IDs, connection status
+- **Debugging Info**: Place non-critical info below cards with `text-xs text-gray-400`
+- **Connection Status**: Use `variant="default"` for connected, `variant="secondary"` for disconnected
+
+### 3. Progress Indicators
+
+- **Custom Progress Bars**: Create reusable `ProgressBar` components
+- **File Upload Progress**: Show file name, uploaded size, total size, and percentage
+- **Auto-hide**: Hide progress bars when not active (`progress === 0`)
+
+### 4. File Upload Components
+
+- **Uppy Integration**: Use `FileDropZone` with optional `uppy` prop for flexibility
+- **Dynamic Text**: Generate acceptance text based on Uppy restrictions
+- **File Display**: Show file name, size, and remove button for selected files
+
+## Color and Theme Guidelines
+
+### 1. Dark Mode Compatibility
+
+- **Text Colors**: Use `text-muted-foreground` for secondary text
+- **Error Colors**: Use `text-destructive` instead of hardcoded red
+- **Backgrounds**: Use `bg-muted` for subtle backgrounds
+- **Hover States**: Use `hover:bg-muted/50` for subtle hover effects
+
+### 2. Text Contrast
+
+- **Light Text on Dark**: Use `text-white` with `drop-shadow-sm` for readability
+- **Hover Effects**: Use `group-hover:text-blue-200` for light blue hover on white text
+- **Gradients**: Use `bg-gradient-to-t from-black/80` for text overlay on images
+
+### 3. Status Colors
+
+- **Success**: Green backgrounds (`bg-green-50`) with green text (`text-green-700`)
+- **Error**: Red backgrounds (`bg-red-50`) with red text (`text-red-700`)
+- **Warning**: Yellow/amber backgrounds for warnings
+- **Info**: Blue backgrounds for informational messages
+
+## Layout Patterns
+
+### 1. Page Containers
+
+```tsx
+// Standard page layout
+<div className="flex flex-col gap-4 max-w-md mx-auto p-6">
+  <Card>{/* Content */}</Card>
+</div>
+```
+
+### 2. Form Layouts
+
+```tsx
+// Standard form structure
+<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+  <div className="flex flex-col gap-2">
+    <label htmlFor="field" className="text-sm font-medium">
+      Label
+    </label>
+    <Input id="field" type="text" required />
+  </div>
+  <Button type="submit" disabled={isPending} className="w-full">
+    {isPending ? "Loading..." : "Submit"}
+  </Button>
+</form>
+```
+
+### 3. Status Displays
+
+```tsx
+// Status card pattern
+<Card>
+  <CardContent className="p-6">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {getStatusIcon()}
+        <div>
+          <h3 className="font-semibold text-lg">Status Title</h3>
+          <p className="text-sm text-muted-foreground">Status description</p>
+        </div>
+      </div>
+      <Badge variant={isActive ? "default" : "secondary"}>Status Badge</Badge>
+    </div>
+  </CardContent>
+</Card>
+```
+
+## Interactive Elements
+
+### 1. Hover Effects
+
+- **Cards**: Use `hover:shadow-lg hover:scale-[1.02]` for subtle lift effect
+- **Images**: Use `group-hover:scale-105` for image zoom on hover
+- **Buttons**: Use `hover:bg-primary/90` for button hover states
+- **Text**: Use `group-hover:text-blue-200` for text hover effects
+
+### 2. Transitions
+
+- **Duration**: Use `transition-all duration-200` for smooth animations
+- **Specific Properties**: Use `transition-colors duration-200` for color changes
+- **Transform**: Use `transition-transform duration-200` for scaling effects
+
+### 3. Loading States
+
+- **Spinners**: Use `Loader2` icon with `animate-spin` for loading indicators
+- **Disabled States**: Use `disabled` prop and loading text
+- **Skeleton Loading**: Consider skeleton components for content loading
+
+## Media Components
+
+### 1. Video Cards
+
+- **Background Images**: Use `absolute inset-0` for full-background images
+- **Gradient Overlays**: Use `bg-gradient-to-t from-black/80` for text readability
+- **Play Buttons**: Use `bg-black/70` with `text-white fill-white` for clean play button
+- **Hover Effects**: Use `group-hover:bg-black/20` for subtle overlay on hover
+
+### 2. Thumbnails
+
+- **Fallback**: Use gradient backgrounds with play icon when no thumbnail
+- **Object Fit**: Use `object-cover` for consistent image display
+- **Aspect Ratios**: Use `aspect-video` for video thumbnails
+
+## Responsive Design
+
+### 1. Container Sizing
+
+- **Mobile**: Use `max-w-md` for mobile-friendly forms
+- **Desktop**: Use `max-w-2xl` for larger content areas
+- **Centering**: Always use `mx-auto` for horizontal centering
+
+### 2. Spacing
+
+- **Consistent**: Use `gap-4` or `space-y-4` for vertical spacing
+- **Padding**: Use `p-6` for card content padding
+- **Margins**: Use `mx-auto` for horizontal centering
+
+## Accessibility
+
+### 1. Form Labels
+
+- **Associations**: Always use `htmlFor` with corresponding `id` attributes
+- **Required Fields**: Use `required` attribute and visual indicators
+- **Error Messages**: Provide clear, descriptive error messages
+
+### 2. Interactive Elements
+
+- **Focus States**: Ensure proper focus indicators
+- **Keyboard Navigation**: Support keyboard navigation for all interactive elements
+- **Screen Readers**: Use semantic HTML and proper ARIA labels
+
+## Best Practices
+
+### 1. Component Composition
+
+- **Reusability**: Create reusable components for common patterns
+- **Props**: Use TypeScript interfaces for component props
+- **Default Values**: Provide sensible defaults for optional props
+
+### 2. State Management
+
+- **Loading States**: Always handle loading and error states
+- **Form Validation**: Provide immediate feedback for form errors
+- **Optimistic Updates**: Consider optimistic updates for better UX
+
+### 3. Performance
+
+- **Conditional Rendering**: Use conditional rendering to avoid unnecessary DOM elements
+- **Memoization**: Use `useMemo` and `useCallback` for expensive operations
+- **Lazy Loading**: Consider lazy loading for heavy components
+
+## Common Patterns
+
+### 1. Error Display
+
+```tsx
+{
+  error && (
+    <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
+      Error: {error.message}
+    </div>
+  );
+}
+```
+
+### 2. Loading Button
+
+```tsx
+<Button type="submit" disabled={isPending} className="w-full">
+  {isPending ? "Creating..." : "Create Video"}
+</Button>
+```
+
+### 3. Status Badge
+
+```tsx
+<Badge variant={isConnected ? "default" : "secondary"}>
+  {isConnected ? "Connected" : "Disconnected"}
+</Badge>
+```
+
+### 4. Debug Information
+
+```tsx
+<div className="text-center text-xs text-gray-400 space-x-4">
+  <span>Job ID: {job.id}</span>
+  <span>Agent: {job.agentId}</span>
+</div>
+```
+
+## File Organization
+
+### 1. Component Structure
+
+- **UI Components**: Place in `src/web/components/ui/`
+- **Page Components**: Place in `src/web/pages/`
+- **Shared Components**: Place in `src/web/components/` (non-UI components)
+
+### 2. Import Patterns
+
+```tsx
+// UI Components
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+
+// Shared Components
+import { ErrorCard } from "../../components/error-card";
+import { VideoCard } from "../../components/video-card";
+
+// Utilities
+import { cn } from "../../lib/utils";
+import { link } from "../../shared/links";
+```
+
+This document should be updated as new patterns emerge and the design system evolves.
+description:
+globs:
+alwaysApply: true
+
+---
