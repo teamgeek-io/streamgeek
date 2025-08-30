@@ -1,7 +1,9 @@
 import { RequestInfo } from "rwsdk/worker";
 import { db } from "../../../../db";
 import { VideoPlayer } from "../../../components/player";
+import { ShareDialog } from "../../../components/share-dialog";
 import { cn } from "../../../lib/utils";
+import { env } from "cloudflare:workers";
 
 export async function VideoPage({ ctx, params }: RequestInfo) {
   const { id } = params;
@@ -11,7 +13,7 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
       id,
     },
   });
-  if (!video) {
+  if (!video?.playlistUrl) {
     return <div>Video not found</div>;
   }
 
@@ -35,7 +37,15 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
           </div>
         )}
         <div className={cn("w-full", isVertical && "sm:max-w-[50vw] mx-auto")}>
-          <h1 className="text-2xl font-bold">{video.title}</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">{video.title}</h1>
+            <ShareDialog
+              videoId={video.id}
+              videoTitle={video.title}
+              playlistUrl={video.playlistUrl}
+              baseUrl={env.BASE_URL}
+            />
+          </div>
           {video.description && (
             <p className="text-sm text-gray-500">{video.description}</p>
           )}
