@@ -17,7 +17,11 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
     return <div>Video not found</div>;
   }
 
-  const isVertical = video.width && video.height && video.width < video.height;
+  const isVertical = !!(
+    video.width &&
+    video.height &&
+    video.width < video.height
+  );
 
   return (
     <>
@@ -44,6 +48,7 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
               videoTitle={video.title}
               playlistUrl={video.playlistUrl}
               baseUrl={env.BASE_URL}
+              isVertical={isVertical}
             />
           </div>
           {video.description && (

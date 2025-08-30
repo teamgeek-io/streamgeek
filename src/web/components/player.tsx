@@ -35,7 +35,7 @@ export const VideoPlayer = ({
           src={video.playlistUrl!}
           preload="auto"
           suppressHydrationWarning
-          className="my-auto"
+          className="w-full h-full my-auto mx-auto object-contain"
         />
       </MediaPlayerVideo>
       <MediaPlayerLoading />

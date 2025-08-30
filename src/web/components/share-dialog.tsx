@@ -18,6 +18,7 @@ interface ShareDialogProps {
   videoTitle: string;
   playlistUrl: string;
   baseUrl: string;
+  isVertical?: boolean;
 }
 
 export function ShareDialog({
@@ -25,12 +26,18 @@ export function ShareDialog({
   videoTitle,
   playlistUrl,
   baseUrl,
+  isVertical = false,
 }: ShareDialogProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const videoUrl = `${baseUrl}/video/${videoId}`;
   const embedUrl = `${baseUrl}/embed/${videoId}`;
-  const embedSnippet = `<iframe width="560" height="315" src="${embedUrl}" title="${videoTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+
+  // Flip dimensions for vertical videos
+  const width = isVertical ? "315" : "560";
+  const height = isVertical ? "560" : "315";
+
+  const embedSnippet = `<iframe width="${width}" height="${height}" src="${embedUrl}" title="${videoTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
 
   const copyToClipboard = async (text: string, field: string) => {
     try {
