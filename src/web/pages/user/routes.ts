@@ -3,16 +3,16 @@ import { Login } from "./Login";
 import { Register } from "./Register";
 import { AppContext } from "../../../worker";
 
+const redirectExistingUser = async ({ ctx }: { ctx: AppContext }) => {
+  if (ctx.user) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: "/upload" },
+    });
+  }
+};
+
 export const userRoutes = [
-  // async ({ ctx }: { ctx: AppContext }) => {
-  //   if (ctx.user) {
-  //     console.log("user", ctx.user);
-  //     return new Response(null, {
-  //       status: 302,
-  //       headers: { Location: "/upload" },
-  //     });
-  //   }
-  // },
-  route("/login", [Login]),
-  route("/register", [Register]),
+  route("/login", [redirectExistingUser, Login]),
+  route("/register", [redirectExistingUser, Register]),
 ];
