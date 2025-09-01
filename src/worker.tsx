@@ -1,7 +1,7 @@
 import { defineApp } from "rwsdk/worker";
 import { route, render, prefix, layout } from "rwsdk/router";
 import { Document } from "@/web/Document";
-import { Home } from "@/web/pages/home";
+import { Home } from "@/web/pages/Home";
 import { setCommonHeaders } from "@/web/headers";
 import { userRoutes } from "@/web/pages/user/routes";
 
