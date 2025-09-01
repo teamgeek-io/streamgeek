@@ -5,6 +5,6 @@ export const link = defineLinks([
   "/upload",
   "/upload/:id",
   "/user/login",
-  "/user/logout",
+  "/user/register",
   "/video/:id",
 ]);

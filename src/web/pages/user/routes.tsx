@@ -1,6 +1,6 @@
 import { route } from "rwsdk/router";
-import { Login } from "./Login";
-import { Register } from "./Register";
+import { Login } from "./login";
+import RegisterPage from "./register";
 import { AppContext } from "../../../worker";
 
 const redirectExistingUser = async ({ ctx }: { ctx: AppContext }) => {
@@ -14,5 +14,5 @@ const redirectExistingUser = async ({ ctx }: { ctx: AppContext }) => {
 
 export const userRoutes = [
   route("/login", [redirectExistingUser, Login]),
-  route("/register", [redirectExistingUser, Register]),
+  route("/register", [redirectExistingUser, RegisterPage]),
 ];

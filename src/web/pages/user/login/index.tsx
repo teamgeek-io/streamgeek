@@ -2,17 +2,17 @@
 
 import { useState, useTransition } from "react";
 
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { authClient } from "../../lib/auth-client";
-import { link } from "../../shared/links";
+} from "../../../components/ui/card";
+import { authClient } from "../../../lib/auth-client";
+import { link } from "../../../shared/links";
 
 export function Login() {
   const [email, setEmail] = useState("");

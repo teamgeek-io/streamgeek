@@ -2,19 +2,19 @@
 
 import { useState, useTransition } from "react";
 
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { authClient } from "../../lib/auth-client";
-import { link } from "../../shared/links";
+} from "../../../components/ui/card";
+import { authClient } from "../../../lib/auth-client";
+import { link } from "../../../shared/links";
 
-export function Register() {
+export function Register({ inviteOnly = false }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +22,7 @@ export function Register() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
 
   const emailRegister = async () => {
     // Basic validation
@@ -45,11 +46,17 @@ export function Register() {
       return;
     }
 
+    if (inviteOnly && !inviteCode.trim()) {
+      setError("Join code is required");
+      return;
+    }
+
     const { data, error } = await authClient.signUp.email(
       {
         email, // user email address
         password, // user password -> min 8 characters by default
         name, // user display name
+        ...(inviteOnly && { inviteCode }),
         // callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
       },
       {
@@ -91,6 +98,22 @@ export function Register() {
                 handleRegister();
               }}
             >
+              {inviteOnly && (
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="joinCode" className="text-sm font-medium">
+                    Join Code
+                  </label>
+                  <Input
+                    id="joinCode"
+                    type="text"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value)}
+                    placeholder="Enter the join code"
+                    required
+                  />
+                </div>
+              )}
+
               <div className="flex flex-col gap-2">
                 <label htmlFor="name" className="text-sm font-medium">
                   Name

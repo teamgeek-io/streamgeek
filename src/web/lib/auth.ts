@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { betterAuth } from "better-auth";
+import { createAuthMiddleware, APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
 // Runtime function for creating auth with Cloudflare Workers context
@@ -12,6 +13,20 @@ export const createAuth = async (env: any) => {
     baseURL: env.BASE_URL || "http://localhost:5173",
     emailAndPassword: {
       enabled: true,
+    },
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== "/sign-up/email") {
+          return;
+        }
+
+        if (env.INVITE_ONLY === "true") {
+          if (ctx.body?.inviteCode !== env.INVITE_CODE)
+            throw new APIError("BAD_REQUEST", {
+              message: "Invite code is invalid",
+            });
+        }
+      }),
     },
   });
 };
