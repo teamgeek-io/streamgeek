@@ -35,7 +35,7 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
             className={cn(
               "w-full",
               !isVertical
-                ? "aspect-16/9 max-h-[50vh]"
+                ? "aspect-16/9"
                 : "aspect-9/16 max-h-[80vh] sm:max-w-[50vw] mx-auto"
             )}
           >
@@ -45,7 +45,7 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
         <div className={cn("w-full", isVertical && "sm:max-w-[50vw] mx-auto")}>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{video.title}</h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-2">
               <EditDialog
                 videoId={video.id}
                 videoTitle={video.title}
@@ -62,7 +62,7 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
             </div>
           </div>
           {video.description && (
-            <p className="text-sm text-gray-500">{video.description}</p>
+            <p className="text-sm text-gray-500 mt-1">{video.description}</p>
           )}
         </div>
       </div>

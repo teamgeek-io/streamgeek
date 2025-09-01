@@ -42,7 +42,7 @@ export function AppLayoutClient({
             </h1>
             <h1 className="text-xl sm:hidden font-semibold">STRMGK</h1>
           </a>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {session && (
               <Button variant="outline" asChild size="icon">
                 <a href={link("/upload")}>
