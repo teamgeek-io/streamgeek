@@ -32,6 +32,8 @@ model Video {
   duration     Int?
   width        Int?
   height       Int?
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id])
 
   jobs Job[]
 
@@ -83,9 +85,11 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  videos Video[]
 
   @@unique([email])
   @@map("user")
+  
 }
 
 model Session {
