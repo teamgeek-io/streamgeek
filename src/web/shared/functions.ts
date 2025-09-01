@@ -31,6 +31,7 @@ export const createVideo = async (title: string) => {
       data: {
         id: videoId,
         title,
+        userId: ctx.user.id,
       },
     });
 
