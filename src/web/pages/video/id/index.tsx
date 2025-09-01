@@ -29,14 +29,14 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
     <>
       <title>{`${video.title} - StreamGeek`}</title>
       <meta name="description" content={video.description ?? ""} />
-      <div className="flex flex-col gap-4 min-h-0">
+      <div className="flex flex-col gap-4 min-h-0 max-h-screen">
         {video.playlistUrl && (
           <div
             className={cn(
-              "w-full",
+              "w-full max-h-[80vh]",
               !isVertical
                 ? "aspect-16/9"
-                : "aspect-9/16 max-h-[80vh] sm:max-w-[50vw] mx-auto"
+                : "aspect-9/16 sm:max-w-[50vw] mx-auto"
             )}
           >
             <VideoPlayer video={video} className="w-full h-full" />
