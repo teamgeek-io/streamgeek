@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: src/agent/dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - src/agent/.env
+    volumes:
+      - ./input:/app/input
+      - ./output:/app/output
+      - ./agent_id.txt:/app/agent_id.txt
+    networks:
+      - streamgeek-network
+
+networks:
+  streamgeek-network:
+    driver: bridge
