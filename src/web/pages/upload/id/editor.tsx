@@ -68,7 +68,9 @@ export function UploadEditor({
 
           {job ? (
             <div className="space-y-4">
-              {uploadResult || job.status === "encoding" ? (
+              {uploadResult ||
+              job.status === "encoding" ||
+              job.status === "uploading" ? (
                 <TranscodeStatus
                   url={job.agent.url}
                   jobId={job.id}
