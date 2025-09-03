@@ -122,6 +122,9 @@ const agentApp = new Hono()
       }
     });
   })
+  .get("/", (c) => {
+    return c.text("Hello Agent!");
+  })
   .use("*", (c, next) => {
     // upload and progress routes use their own auth middleware
     if (
@@ -132,9 +135,7 @@ const agentApp = new Hono()
     }
     return apiKeyAuth(c, next, process.env.API_KEY!);
   })
-  .get("/", (c) => {
-    return c.text("Hello Agent!");
-  })
+
   .get("/ping", async (c) => {
     const agentUrl = process.env.AGENT_URL;
     const agentId = await fs.readFile("agent_id.txt", "utf8");
