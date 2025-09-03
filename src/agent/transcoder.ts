@@ -156,6 +156,8 @@ async function transcode(
       "48",
       "-sc_threshold",
       "0",
+      "-pix_fmt",
+      "yuv420p",
       "-hls_time",
       "4",
       "-hls_playlist_type",
