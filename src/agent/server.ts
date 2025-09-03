@@ -35,6 +35,15 @@ const transcodingEvents = new EventEmitter();
 const COMPLETE_MESSAGE = "complete";
 const FAILED_MESSAGE = "failed";
 
+const messageBuffer = new Map<string, string[]>();
+
+const bufferMessage = (jobId: string, message: string) => {
+  if (!messageBuffer.has(jobId)) {
+    messageBuffer.set(jobId, []);
+  }
+  messageBuffer.get(jobId)!.push(message);
+};
+
 const agentApp = new Hono()
   .use("*", cors({ origin: process.env.ORCHESTRATOR_URL! }))
   .all("/upload*", uploadTokenAuth, async (c) => {
@@ -72,6 +81,23 @@ const agentApp = new Hono()
         event: "connected",
         id: jobId,
       });
+
+      // Check for and replay any buffered messages
+      const bufferedMessages = messageBuffer.get(jobId) || [];
+      if (bufferedMessages.length > 0) {
+        console.log(
+          `Replaying ${bufferedMessages.length} buffered messages for job ${jobId}`
+        );
+        for (const message of bufferedMessages) {
+          stream.writeSSE({
+            data: message,
+            event: "progress",
+            id: jobId,
+          });
+        }
+        // Clear the buffer after replaying
+        messageBuffer.delete(jobId);
+      }
 
       // Set up event listener for transcoding progress
       const progressHandler = async (message: string) => {
@@ -174,11 +200,14 @@ const agentApp = new Hono()
       // We sneaky DONT AWAIT here to avoid blocking the request
       processPresets(inputPath, videoId, outputFolder, (message) => {
         transcodingEvents.emit(jobId, message);
+        // Also buffer the message in case no clients are connected yet
+        bufferMessage(jobId, message);
       })
         .then(async () => {
           const dimensions = await getResolution(decodeURI(inputPath.pathname));
 
           transcodingEvents.emit(jobId, "Uploading to R2");
+          bufferMessage(jobId, "Uploading to R2");
 
           await orchestratorClient.orchestrator.job[":jobId"].$patch({
             param: {
@@ -193,6 +222,7 @@ const agentApp = new Hono()
             s3Prefix: videoId,
             onProgress: (message) => {
               transcodingEvents.emit(jobId, message);
+              bufferMessage(jobId, message);
             },
           });
 
@@ -225,6 +255,7 @@ const agentApp = new Hono()
           });
 
           transcodingEvents.emit(jobId, COMPLETE_MESSAGE);
+          messageBuffer.delete(jobId);
         })
         .catch(async (error) => {
           console.error("Error transcoding/uploading", error);
@@ -235,6 +266,7 @@ const agentApp = new Hono()
             json: { status: "failed" },
           });
           transcodingEvents.emit(jobId, FAILED_MESSAGE);
+          messageBuffer.delete(jobId);
         });
 
       return c.json({
