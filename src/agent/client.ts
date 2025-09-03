@@ -14,7 +14,7 @@ const createAgentClient = (url: string, apiKey: string) =>
       headers: {
         "X-API-Key": apiKey,
       },
-      timeout: 1000,
+      timeout: 3000,
       retry: 1,
     }),
   });
