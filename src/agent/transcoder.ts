@@ -8,7 +8,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import ffmpeg from "fluent-ffmpeg";
 import { basename, extname } from "node:path";
-import { getResolution, getVideoOrientation, VideoOrientation } from "./utils";
+import {
+  getResolution,
+  getDuration,
+  getVideoOrientation,
+  VideoOrientation,
+} from "./utils";
 
 type Preset = {
   resolution: number;
@@ -62,10 +67,11 @@ async function generateThumbnail(
 
   const { promise, resolve, reject } = Promise.withResolvers<void>();
 
-  // Get source video dimensions
+  // Get source video dimensions and duration
   const [sourceWidth, sourceHeight] = await getResolution(
     decodeURI(input.pathname)
   );
+  const duration = await getDuration(decodeURI(input.pathname));
 
   // Calculate thumbnail dimensions while preserving aspect ratio and capping at 1080p
   let width = sourceWidth;
@@ -81,8 +87,23 @@ async function generateThumbnail(
     height = Math.round(height * scale);
   }
 
+  // Calculate the middle point of the video for thumbnail generation
+  const middleTime = Math.max(1, Math.floor(duration / 2));
+
+  // Format timestamp to handle any duration (HH:MM:SS)
+  const hours = Math.floor(middleTime / 3600);
+  const minutes = Math.floor((middleTime % 3600) / 60);
+  const seconds = middleTime % 60;
+
+  const middleTimeFormatted = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
   console.log(
     `Thumbnail dimensions: ${width}x${height} (source: ${sourceWidth}x${sourceHeight})`
+  );
+  console.log(
+    `Video duration: ${duration}s, thumbnail at: ${middleTimeFormatted}`
   );
 
   ffmpeg(decodeURI(input.pathname))
@@ -90,11 +111,13 @@ async function generateThumbnail(
       "-vframes",
       "1", // Extract only 1 frame
       "-ss",
-      "00:00:01", // Seek to 1 second (avoid black frames at start)
+      middleTimeFormatted,
       "-filter:v",
       `scale=${width}:${height}`, // Scale to calculated dimensions
       "-q:v",
       "2", // High quality JPEG
+      "-strict",
+      "unofficial", // Allow non-standard YUV ranges for MJPEG encoding
     ])
     .output(thumbnail_path)
     .on("start", () => {

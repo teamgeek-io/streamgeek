@@ -16,6 +16,18 @@ export async function getResolution(input: string): Promise<Resolution> {
   return promise;
 }
 
+export async function getDuration(input: string): Promise<number> {
+  const { promise, resolve, reject } = Promise.withResolvers<number>();
+  ffmpeg.ffprobe(input, (err, metadata) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(metadata.format.duration || 0);
+    }
+  });
+  return promise;
+}
+
 export type VideoOrientation = "horizontal" | "vertical";
 export async function getVideoOrientation(
   input: URL
