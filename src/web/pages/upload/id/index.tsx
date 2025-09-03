@@ -38,19 +38,24 @@ export async function UploadEditorPage({
     },
   });
 
+  // If we have a job, verify the agent is still responding
   if (job) {
     const agentClient = createAgentClient(job.agent.url, env.AGENTS_API_KEY);
     try {
       await agentClient.ping.$get();
     } catch (error) {
       console.error("Agent not responding", error);
+      // Mark the job as failed since its agent is down
       await db.job.update({
         where: { id: job.id },
         data: { status: "failed" },
       });
       job = null;
     }
-  } else {
+  }
+
+  // If no job or job's agent failed, try to get a new agent and create a new job
+  if (!job) {
     const agent = await getAgent();
 
     if (!agent) {
