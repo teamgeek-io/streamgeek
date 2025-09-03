@@ -45,7 +45,7 @@ export const getAgent = async () => {
         break;
       }
     } catch (error) {
-      console.error("Agent not responding", error);
+      console.error("getAgent not responding with ping", agent.url, error);
       //ToDo: delete dead agent from db
     }
   }

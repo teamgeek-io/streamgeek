@@ -44,7 +44,11 @@ export async function UploadEditorPage({
     try {
       await agentClient.ping.$get();
     } catch (error) {
-      console.error("Agent not responding", error);
+      console.error(
+        "Agent for existing job not responding",
+        job.agent.url,
+        error
+      );
       // Mark the job as failed since its agent is down
       await db.job.update({
         where: { id: job.id },
