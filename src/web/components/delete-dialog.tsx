@@ -13,7 +13,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { deleteVideo } from "../shared/functions";
-import { authClient } from "../lib/auth-client";
 import { link } from "../shared/links";
 
 interface DeleteDialogProps {
@@ -25,12 +24,6 @@ export function DeleteDialog({ videoId, videoTitle }: DeleteDialogProps) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-
-  const { data: session } = authClient.useSession();
-
-  if (!session?.user) {
-    return null;
-  }
 
   const handleDelete = async () => {
     setError(null);

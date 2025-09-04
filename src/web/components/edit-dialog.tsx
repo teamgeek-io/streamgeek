@@ -16,7 +16,6 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { updateVideo } from "../shared/functions";
-import { authClient } from "../lib/auth-client";
 
 interface EditDialogProps {
   videoId: string;
@@ -34,15 +33,6 @@ export function EditDialog({
   const [description, setDescription] = useState(videoDescription);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const { data: session } = authClient.useSession();
-
-  if (!session?.user) {
-    // We check for user on client side here so that
-    // so that we can cache this page safely
-    // ToDo: learn about cloudflare caching to better understand this,
-    // edge SSR might be so cheap that we can just SSR if better auth cookie is set
-    return null;
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

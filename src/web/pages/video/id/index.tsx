@@ -10,6 +10,8 @@ import { env } from "cloudflare:workers";
 export async function VideoPage({ ctx, params }: RequestInfo) {
   const { id } = params;
 
+  const user = ctx.user;
+
   const video = await db.video.findUnique({
     where: {
       id,
@@ -46,11 +48,6 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{video.title}</h1>
             <div className="flex items-center gap-2 sm:gap-2">
-              <EditDialog
-                videoId={video.id}
-                videoTitle={video.title}
-                videoDescription={video.description || undefined}
-              />
               <ShareDialog
                 videoId={video.id}
                 videoTitle={video.title}
@@ -58,7 +55,17 @@ export async function VideoPage({ ctx, params }: RequestInfo) {
                 baseUrl={env.BASE_URL}
                 isVertical={isVertical}
               />
-              <DeleteDialog videoId={video.id} videoTitle={video.title} />
+              {user && (
+                <>
+                  <EditDialog
+                    videoId={video.id}
+                    videoTitle={video.title}
+                    videoDescription={video.description || undefined}
+                  />
+
+                  <DeleteDialog videoId={video.id} videoTitle={video.title} />
+                </>
+              )}
             </div>
           </div>
           {video.description && (
