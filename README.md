@@ -2,7 +2,7 @@
 
 POC for rolling our own video streaming! 🎥🚀🔥
 
-- Vite
+- rwsdk 🔥
 - database (Prisma via D1)
 - Auth (better auth)
 - Storage (via R2)
