@@ -1,5 +1,5 @@
 import { route } from "rwsdk/router";
-import { CreateUpload } from ".";
+import { CreateUpload } from "./index";
 
 import { UploadEditorPage } from "./id";
 import { db } from "../../../db";
