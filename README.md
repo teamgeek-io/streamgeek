@@ -1,3 +1,9 @@
+# Deprecated
+
+Moved this out of TG's github.
+
+Development continues in another repo 👉 https://github.com/TomRadford/streamgeek
+
 # Streamgeek
 
 POC for rolling our own video streaming! 🎥🚀🔥
